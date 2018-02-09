@@ -1,0 +1,109 @@
+#|
+$Source $Yail
+|#
+
+(define-form appinventor.ai_dollarbr.CaImoRa.OPCOES OPCOES)
+(require <com.google.youngandroid.runtime>)
+
+(def (p$goToScreen $screen)  (if #t (begin   (call-yail-primitive open-another-screen (*list-for-runtime* (lexical-value $screen)) '(text) "open another screen")))(call-yail-primitive close-screen (*list-for-runtime* ) '() "close screen"))
+;;; OPCOES
+
+(do-after-form-creation (set-and-coerce-property! 'OPCOES 'BackgroundColor #x00000000 'number)
+ (set-and-coerce-property! 'OPCOES 'ScreenOrientation "user" 'text)
+ (set-and-coerce-property! 'OPCOES 'Title "CONFIGURA\u00c7\u00d5ES" 'text)
+)
+
+(define-event OPCOES Initialize()(set-this-form)
+    (set-and-coerce-property! 'OPCOES 'AboutScreen "Configura\u00e7\u00f5es e personaliza\u00e7\u00f5es dispon\u00edveis para o usu\u00e1rio.<!--" 'text))
+(define-event OPCOES BackPressed()(set-this-form)
+    (if #t (begin   ((get-var p$goToScreen) "Screen1"))))
+;;; HorizontalArrangement8
+
+(add-component OPCOES HorizontalArrangement HorizontalArrangement8 
+(set-and-coerce-property! 'HorizontalArrangement8 'Width -2 'number)
+
+)
+
+;;; tabela
+
+(add-component HorizontalArrangement8 Label tabela 
+(set-and-coerce-property! 'tabela 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'tabela 'Text "Deletar Cadastro : " 'text)
+
+(set-and-coerce-property! 'tabela 'Width -2 'number)
+
+)
+
+;;; limparDB
+
+(add-component HorizontalArrangement8 Button limparDB 
+(set-and-coerce-property! 'limparDB 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limparDB 'Text "Executar" 'text)
+
+(set-and-coerce-property! 'limparDB 'Width -2 'number)
+
+)
+
+(define-event limparDB Click()(set-this-form)
+    (call-component-method 'Notificador 'ShowChooseDialog (*list-for-runtime* "Voc\u00ea tem certeza que deseja apagar todos im\u00f3veis cadastrados?"  "Limpar tabela"  "Sim"  "Cancelar"  #f) '(text text text text boolean)))
+;;; HorizontalArrangement9
+
+(add-component OPCOES HorizontalArrangement HorizontalArrangement9 
+(set-and-coerce-property! 'HorizontalArrangement9 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement9 'Width -2 'number)
+
+)
+
+;;; defaultconfig
+
+(add-component HorizontalArrangement9 Button defaultconfig 
+(set-and-coerce-property! 'defaultconfig 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'defaultconfig 'Shape 1 'number)
+
+(set-and-coerce-property! 'defaultconfig 'Text "Redefinir configura\u00e7\u00f5es" 'text)
+
+)
+
+(define-event defaultconfig Click()(set-this-form)
+    (call-component-method 'Notificador 'ShowChooseDialog (*list-for-runtime* "Todas as configura\u00e7\u00f5es, tabelas e dados do programa ir\u00e3o ser permanentemente removidos \n (Tabelas exportadas para mem\u00f3ria externa n\u00e3o ser\u00e3o removidas)"  "Redefinir configura\u00e7\u00f5es"  "Continuar"  "Cancelar"  #f) '(text text text text boolean)))
+;;; HorizontalArrangement1
+
+(add-component OPCOES HorizontalArrangement HorizontalArrangement1 
+(set-and-coerce-property! 'HorizontalArrangement1 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement1 'Width -2 'number)
+
+)
+
+;;; Voltar
+
+(add-component HorizontalArrangement1 Button Voltar 
+(set-and-coerce-property! 'Voltar 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Voltar 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Voltar 'Shape 1 'number)
+
+(set-and-coerce-property! 'Voltar 'Text "VOLTAR" 'text)
+
+)
+
+(define-event Voltar Click()(set-this-form)
+    ((get-var p$goToScreen) "Screen1"))
+;;; Imolista
+
+(add-component OPCOES TinyDB Imolista 
+)
+
+;;; Notificador
+
+(add-component OPCOES Notifier Notificador 
+)
+
+(define-event Notificador AfterChoosing($choice)(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (lexical-value $choice) "Sim") '(any any) "=") (begin   (call-component-method 'Imolista 'ClearTag (*list-for-runtime* "tabela_csv") '(text))(call-component-method 'Imolista 'ClearTag (*list-for-runtime* "tabela_resultado") '(text))(call-component-method 'Imolista 'ClearTag (*list-for-runtime* "numero_imovel") '(text))) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (lexical-value $choice) "Continuar") '(any any) "=") (begin   (call-component-method 'Imolista 'ClearAll (*list-for-runtime*) '()))))))
+(init-runtime)

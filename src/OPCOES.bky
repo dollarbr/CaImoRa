@@ -1,0 +1,238 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="component_event" id="1" collapsed="true" x="-8" y="-8">
+    <mutation component_type="Button" instance_name="defaultconfig" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">defaultconfig</field>
+    <statement name="DO">
+      <block type="component_method" id="2" inline="false">
+        <mutation component_type="Notifier" method_name="ShowChooseDialog" is_generic="false" instance_name="Notificador"></mutation>
+        <field name="COMPONENT_SELECTOR">Notificador</field>
+        <value name="ARG0">
+          <block type="text" id="3">
+            <field name="TEXT">Todas as configurações, tabelas e dados do programa irão ser permanentemente removidos \n (Tabelas exportadas para memória externa não serão removidas)</field>
+          </block>
+        </value>
+        <value name="ARG1">
+          <block type="text" id="4">
+            <field name="TEXT">Redefinir configurações</field>
+          </block>
+        </value>
+        <value name="ARG2">
+          <block type="text" id="5">
+            <field name="TEXT">Continuar</field>
+          </block>
+        </value>
+        <value name="ARG3">
+          <block type="text" id="6">
+            <field name="TEXT">Cancelar</field>
+          </block>
+        </value>
+        <value name="ARG4">
+          <block type="logic_boolean" id="7">
+            <field name="BOOL">FALSE</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="procedures_defnoreturn" id="8" collapsed="true" x="-8" y="42">
+    <mutation>
+      <arg name="screen"></arg>
+    </mutation>
+    <field name="NAME">goToScreen</field>
+    <field name="VAR0">screen</field>
+    <statement name="STACK">
+      <block type="controls_if" id="9" inline="false">
+        <value name="IF0">
+          <block type="logic_boolean" id="10">
+            <field name="BOOL">TRUE</field>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="controls_openAnotherScreen" id="11" inline="false">
+            <value name="SCREEN">
+              <block type="lexical_variable_get" id="12">
+                <field name="VAR">screen</field>
+              </block>
+            </value>
+          </block>
+        </statement>
+        <next>
+          <block type="controls_closeScreen" id="13"></block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="14" collapsed="true" x="-8" y="93">
+    <mutation component_type="Button" instance_name="limparDB" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">limparDB</field>
+    <statement name="DO">
+      <block type="component_method" id="15" inline="false">
+        <mutation component_type="Notifier" method_name="ShowChooseDialog" is_generic="false" instance_name="Notificador"></mutation>
+        <field name="COMPONENT_SELECTOR">Notificador</field>
+        <value name="ARG0">
+          <block type="text" id="16">
+            <field name="TEXT">Você tem certeza que deseja apagar todos imóveis cadastrados?</field>
+          </block>
+        </value>
+        <value name="ARG1">
+          <block type="text" id="17">
+            <field name="TEXT">Limpar tabela</field>
+          </block>
+        </value>
+        <value name="ARG2">
+          <block type="text" id="18">
+            <field name="TEXT">Sim</field>
+          </block>
+        </value>
+        <value name="ARG3">
+          <block type="text" id="19">
+            <field name="TEXT">Cancelar</field>
+          </block>
+        </value>
+        <value name="ARG4">
+          <block type="logic_boolean" id="20">
+            <field name="BOOL">FALSE</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="21" collapsed="true" x="-8" y="144">
+    <mutation component_type="Notifier" instance_name="Notificador" event_name="AfterChoosing"></mutation>
+    <field name="COMPONENT_SELECTOR">Notificador</field>
+    <statement name="DO">
+      <block type="controls_if" id="22" inline="false">
+        <mutation elseif="1"></mutation>
+        <value name="IF0">
+          <block type="logic_compare" id="23" inline="true">
+            <field name="OP">EQ</field>
+            <value name="A">
+              <block type="lexical_variable_get" id="24">
+                <field name="VAR">choice</field>
+              </block>
+            </value>
+            <value name="B">
+              <block type="text" id="25">
+                <field name="TEXT">Sim</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="component_method" id="26" inline="false">
+            <mutation component_type="TinyDB" method_name="ClearTag" is_generic="false" instance_name="Imolista"></mutation>
+            <field name="COMPONENT_SELECTOR">Imolista</field>
+            <value name="ARG0">
+              <block type="text" id="27">
+                <field name="TEXT">tabela_csv</field>
+              </block>
+            </value>
+            <next>
+              <block type="component_method" id="28" inline="false">
+                <mutation component_type="TinyDB" method_name="ClearTag" is_generic="false" instance_name="Imolista"></mutation>
+                <field name="COMPONENT_SELECTOR">Imolista</field>
+                <value name="ARG0">
+                  <block type="text" id="29">
+                    <field name="TEXT">tabela_resultado</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="component_method" id="30" inline="false">
+                    <mutation component_type="TinyDB" method_name="ClearTag" is_generic="false" instance_name="Imolista"></mutation>
+                    <field name="COMPONENT_SELECTOR">Imolista</field>
+                    <value name="ARG0">
+                      <block type="text" id="31">
+                        <field name="TEXT">numero_imovel</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <value name="IF1">
+          <block type="logic_compare" id="32" inline="true">
+            <field name="OP">EQ</field>
+            <value name="A">
+              <block type="lexical_variable_get" id="33">
+                <field name="VAR">choice</field>
+              </block>
+            </value>
+            <value name="B">
+              <block type="text" id="34">
+                <field name="TEXT">Continuar</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO1">
+          <block type="component_method" id="35">
+            <mutation component_type="TinyDB" method_name="ClearAll" is_generic="false" instance_name="Imolista"></mutation>
+            <field name="COMPONENT_SELECTOR">Imolista</field>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="36" collapsed="true" x="-8" y="195">
+    <mutation component_type="Form" instance_name="OPCOES" event_name="Initialize"></mutation>
+    <field name="COMPONENT_SELECTOR">OPCOES</field>
+    <statement name="DO">
+      <block type="component_set_get" id="37" inline="false">
+        <mutation component_type="Form" set_or_get="set" property_name="AboutScreen" is_generic="false" instance_name="OPCOES"></mutation>
+        <field name="COMPONENT_SELECTOR">OPCOES</field>
+        <field name="PROP">AboutScreen</field>
+        <value name="VALUE">
+          <block type="text" id="38">
+            <field name="TEXT">Configurações e personalizações disponíveis para o usuário.&lt;!--</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="39" collapsed="true" x="-8" y="246">
+    <mutation component_type="Form" instance_name="OPCOES" event_name="BackPressed"></mutation>
+    <field name="COMPONENT_SELECTOR">OPCOES</field>
+    <statement name="DO">
+      <block type="controls_if" id="40" inline="false">
+        <value name="IF0">
+          <block type="logic_boolean" id="41">
+            <field name="BOOL">TRUE</field>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="procedures_callnoreturn" id="42" inline="false">
+            <mutation name="goToScreen">
+              <arg name="screen"></arg>
+            </mutation>
+            <field name="PROCNAME">goToScreen</field>
+            <value name="ARG0">
+              <block type="text" id="43">
+                <field name="TEXT">Screen1</field>
+              </block>
+            </value>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="44" collapsed="true" x="-8" y="297">
+    <mutation component_type="Button" instance_name="Voltar" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">Voltar</field>
+    <statement name="DO">
+      <block type="procedures_callnoreturn" id="45" inline="false">
+        <mutation name="goToScreen">
+          <arg name="screen"></arg>
+        </mutation>
+        <field name="PROCNAME">goToScreen</field>
+        <value name="ARG0">
+          <block type="text" id="46">
+            <field name="TEXT">Screen1</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <yacodeblocks ya-version="95" language-version="17"></yacodeblocks>
+</xml>

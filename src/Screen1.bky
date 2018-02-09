@@ -1,0 +1,166 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="component_event" id="1" collapsed="true" x="-112" y="1">
+    <mutation component_type="Button" instance_name="Dados" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">Dados</field>
+    <statement name="DO">
+      <block type="procedures_callnoreturn" id="2" inline="false">
+        <mutation name="goToScreen">
+          <arg name="screen"></arg>
+        </mutation>
+        <field name="PROCNAME">goToScreen</field>
+        <value name="ARG0">
+          <block type="text" id="3">
+            <field name="TEXT">DADOS</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="procedures_defnoreturn" id="4" collapsed="true" x="-112" y="52">
+    <mutation>
+      <arg name="screen"></arg>
+    </mutation>
+    <field name="NAME">goToScreen</field>
+    <field name="VAR0">screen</field>
+    <statement name="STACK">
+      <block type="controls_if" id="5" inline="false">
+        <value name="IF0">
+          <block type="logic_boolean" id="6">
+            <field name="BOOL">TRUE</field>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="controls_openAnotherScreen" id="7" inline="false">
+            <value name="SCREEN">
+              <block type="lexical_variable_get" id="8">
+                <field name="VAR">screen</field>
+              </block>
+            </value>
+          </block>
+        </statement>
+        <next>
+          <block type="controls_closeScreen" id="9"></block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="10" collapsed="true" x="-112" y="103">
+    <mutation component_type="Button" instance_name="Lista" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">Lista</field>
+    <statement name="DO">
+      <block type="procedures_callnoreturn" id="11" inline="false">
+        <mutation name="goToScreen">
+          <arg name="screen"></arg>
+        </mutation>
+        <field name="PROCNAME">goToScreen</field>
+        <value name="ARG0">
+          <block type="text" id="12">
+            <field name="TEXT">LISTA</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="13" collapsed="true" x="-112" y="154">
+    <mutation component_type="Notifier" instance_name="Notificador" event_name="AfterChoosing"></mutation>
+    <field name="COMPONENT_SELECTOR">Notificador</field>
+    <statement name="DO">
+      <block type="controls_if" id="14" inline="false">
+        <value name="IF0">
+          <block type="logic_compare" id="15" inline="true">
+            <field name="OP">EQ</field>
+            <value name="A">
+              <block type="lexical_variable_get" id="16">
+                <field name="VAR">choice</field>
+              </block>
+            </value>
+            <value name="B">
+              <block type="text" id="17">
+                <field name="TEXT">Sim</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="controls_closeApplication" id="18"></block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="19" collapsed="true" x="-112" y="205">
+    <mutation component_type="Button" instance_name="Opcoes" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">Opcoes</field>
+    <statement name="DO">
+      <block type="procedures_callnoreturn" id="20" inline="false">
+        <mutation name="goToScreen">
+          <arg name="screen"></arg>
+        </mutation>
+        <field name="PROCNAME">goToScreen</field>
+        <value name="ARG0">
+          <block type="text" id="21">
+            <field name="TEXT">OPCOES</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="22" collapsed="true" x="-112" y="256">
+    <mutation component_type="Button" instance_name="Sair" event_name="Click"></mutation>
+    <field name="COMPONENT_SELECTOR">Sair</field>
+    <statement name="DO">
+      <block type="controls_closeApplication" id="23"></block>
+    </statement>
+  </block>
+  <block type="component_event" id="24" collapsed="true" x="-112" y="307">
+    <mutation component_type="Form" instance_name="Screen1" event_name="BackPressed"></mutation>
+    <field name="COMPONENT_SELECTOR">Screen1</field>
+    <statement name="DO">
+      <block type="component_method" id="25" inline="false">
+        <mutation component_type="Notifier" method_name="ShowChooseDialog" is_generic="false" instance_name="Notificador"></mutation>
+        <field name="COMPONENT_SELECTOR">Notificador</field>
+        <value name="ARG0">
+          <block type="text" id="26">
+            <field name="TEXT">Você deseja mesmo sair do aplicativo?</field>
+          </block>
+        </value>
+        <value name="ARG1">
+          <block type="text" id="27">
+            <field name="TEXT">Sair</field>
+          </block>
+        </value>
+        <value name="ARG2">
+          <block type="text" id="28">
+            <field name="TEXT">Sim</field>
+          </block>
+        </value>
+        <value name="ARG3">
+          <block type="text" id="29">
+            <field name="TEXT">Cancelar</field>
+          </block>
+        </value>
+        <value name="ARG4">
+          <block type="logic_boolean" id="30">
+            <field name="BOOL">FALSE</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <block type="component_event" id="31" collapsed="true" x="-112" y="358">
+    <mutation component_type="Form" instance_name="Screen1" event_name="Initialize"></mutation>
+    <field name="COMPONENT_SELECTOR">Screen1</field>
+    <statement name="DO">
+      <block type="component_set_get" id="32" inline="false">
+        <mutation component_type="Form" set_or_get="set" property_name="AboutScreen" is_generic="false" instance_name="Screen1"></mutation>
+        <field name="COMPONENT_SELECTOR">Screen1</field>
+        <field name="PROP">AboutScreen</field>
+        <value name="VALUE">
+          <block type="text" id="33">
+            <field name="TEXT">Ca.Imo.Ra. é um aplicativo criado como Trabalho de Monografia e apresentado ao Curso de Engenharia Civil da Universidade Comunitária da Região de Chapecó, como parte dos requisitos para obtenção de Bacharel em Engenharia Civil, foi criado por Felipe Dallagnol e seu nome é um acrônimo de Cadastro Imobiliário Rápido.&lt;!--</field>
+          </block>
+        </value>
+      </block>
+    </statement>
+  </block>
+  <yacodeblocks ya-version="95" language-version="17"></yacodeblocks>
+</xml>

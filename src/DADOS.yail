@@ -1,0 +1,2604 @@
+#|
+$Source $Yail
+|#
+
+(define-form appinventor.ai_dollarbr.CaImoRa.DADOS DADOS)
+(require <com.google.youngandroid.runtime>)
+
+(def (p$desliga_pega_coord )  (set-and-coerce-property! 'LocationSensor1 'Enabled #f 'boolean))
+(def g$tabela (call-yail-primitive make-yail-list (*list-for-runtime* ) '() "make a list"))
+(def (p$tabela_resultado )  (call-component-method 'Imolista 'StoreValue (*list-for-runtime* "tabela_resultado"  (get-var g$tabela)) '(text any))(set-var! g$data (call-yail-primitive make-yail-list (*list-for-runtime* ) '() "make a list"))(call-component-method 'Imolista 'StoreValue (*list-for-runtime* "tabela_csv"  (call-yail-primitive yail-list-to-csv-table (*list-for-runtime* (get-var g$tabela) ) '(list) "list to csv table")) '(text any))(call-component-method 'Imolista 'StoreValue (*list-for-runtime* "numero_imovel"  (get-var g$realtyn)) '(text any))(call-component-method 'notificador 'ShowAlert (*list-for-runtime* (call-yail-primitive string-append (*list-for-runtime* "Dados do im\u00f3vel " (get-var g$realtyn) " cadastrado." ) '(text text text ) "join")) '(text)))
+(def (p$cria_tabela )  (if (call-yail-primitive string-empty? (*list-for-runtime* (get-var g$tabela)) '(text) "is text empty?") (begin   (set-var! g$tabela (call-yail-primitive make-yail-list (*list-for-runtime* (get-var g$header) (get-var g$data) ) '(any any ) "make a list"))) (begin   (call-yail-primitive yail-list-add-to-list! (*list-for-runtime* (get-var g$tabela) (get-var g$data) ) '(list any ) "add items to list")))((get-var p$tabela_resultado) ))
+(def g$data (call-yail-primitive make-yail-list (*list-for-runtime* ) '() "make a list"))
+(def (p$goToScreen $screen)  (if #t (begin   (call-yail-primitive open-another-screen (*list-for-runtime* (lexical-value $screen)) '(text) "open another screen")))(call-yail-primitive close-screen (*list-for-runtime* ) '() "close screen"))
+(def g$start "")
+(def g$fotolink (call-yail-primitive make-yail-list (*list-for-runtime* ) '() "make a list"))
+(def g$header (call-yail-primitive make-yail-list (*list-for-runtime* ) '() "make a list"))
+(def g$realtyn 0)
+;;; DADOS
+
+(do-after-form-creation (set-and-coerce-property! 'DADOS 'AlignHorizontal 3 'number)
+ (set-and-coerce-property! 'DADOS 'BackgroundColor #x00000000 'number)
+ (set-and-coerce-property! 'DADOS 'ScreenOrientation "user" 'text)
+ (set-and-coerce-property! 'DADOS 'Title "FORMUL\u00c1RIO" 'text)
+)
+
+(define-event DADOS Initialize()(set-this-form)
+    (set-and-coerce-property! 'DADOS 'AboutScreen "Esta tela \u00e9 onde se cadastra os dados dos im\u00f3veis necess\u00e1rios, sendo cadastrados um por vez.<!--" 'text)(set-and-coerce-property! 'LocationSensor1 'Enabled #f 'boolean)(set-var! g$tabela (call-component-method 'Imolista 'GetValue (*list-for-runtime* "tabela_resultado"  "") '(text any))))
+(define-event DADOS BackPressed()(set-this-form)
+    (call-component-method 'notificador 'ShowChooseDialog (*list-for-runtime* "Voc\u00ea deseja mesmo voltar ao menu inicial? \n (Dados n\u00e3o salvos ser\u00e3o perdidos)"  "VOLTAR"  "Sim"  "Cancelar"  #f) '(text text text text boolean)))
+;;; VerticalArrangement30
+
+(add-component DADOS VerticalArrangement VerticalArrangement30 
+(set-and-coerce-property! 'VerticalArrangement30 'AlignHorizontal 3 'number)
+
+(set-and-coerce-property! 'VerticalArrangement30 'Width -2 'number)
+
+)
+
+;;; Desejafoto
+
+(add-component VerticalArrangement30 ListPicker Desejafoto 
+(set-and-coerce-property! 'Desejafoto 'ElementsFromString "Sim, N\u00e3o" 'text)
+
+(set-and-coerce-property! 'Desejafoto 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Desejafoto 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Desejafoto 'Shape 2 'number)
+
+(set-and-coerce-property! 'Desejafoto 'Text "DESEJA ADICIONAR FOTOS AO IM\u00d3VEL?" 'text)
+
+(set-and-coerce-property! 'Desejafoto 'Width -2 'number)
+
+)
+
+(define-event Desejafoto AfterPicking()(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'Desejafoto 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'VerticalArrangement31 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'VerticalArrangement31 'Visible #f 'boolean))))
+;;; VerticalArrangement31
+
+(add-component VerticalArrangement30 VerticalArrangement VerticalArrangement31 
+(set-and-coerce-property! 'VerticalArrangement31 'AlignHorizontal 3 'number)
+
+(set-and-coerce-property! 'VerticalArrangement31 'Visible #f 'boolean)
+
+)
+
+;;; Tirafoto
+
+(add-component VerticalArrangement31 Button Tirafoto 
+(set-and-coerce-property! 'Tirafoto 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Tirafoto 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Tirafoto 'Shape 1 'number)
+
+(set-and-coerce-property! 'Tirafoto 'Text "TIRAR FOTO" 'text)
+
+)
+
+(define-event Tirafoto Click()(set-this-form)
+    (call-component-method 'Camera1 'TakePicture (*list-for-runtime*) '())(set-and-coerce-property! 'Tirafoto 'Text "TIRAR OUTRA FOTO" 'text))
+;;; Foto
+
+(add-component VerticalArrangement31 Image Foto 
+)
+
+;;; HorizontalArrangement59
+
+(add-component VerticalArrangement30 HorizontalArrangement HorizontalArrangement59 
+(set-and-coerce-property! 'HorizontalArrangement59 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement59 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'HorizontalArrangement59 'Width -2 'number)
+
+)
+
+;;; desatfoto
+
+(add-component HorizontalArrangement59 Button desatfoto 
+(set-and-coerce-property! 'desatfoto 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'desatfoto 'Shape 1 'number)
+
+(set-and-coerce-property! 'desatfoto 'Text "Desativar visualiza\u00e7\u00e3o" 'text)
+
+)
+
+(define-event desatfoto Click()(set-this-form)
+    (set-and-coerce-property! 'Foto 'Visible #f 'boolean))
+;;; VerticalArrangement2
+
+(add-component DADOS VerticalArrangement VerticalArrangement2 
+(set-and-coerce-property! 'VerticalArrangement2 'Width -2 'number)
+
+)
+
+;;; Label1
+
+(add-component VerticalArrangement2 Label Label1 
+(set-and-coerce-property! 'Label1 'BackgroundColor #x00000000 'number)
+
+(set-and-coerce-property! 'Label1 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label1 'FontSize 25 'number)
+
+(set-and-coerce-property! 'Label1 'Text "LOCALIZA\u00c7\u00c3O" 'text)
+
+(set-and-coerce-property! 'Label1 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label1 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement1
+
+(add-component VerticalArrangement2 VerticalArrangement VerticalArrangement1 
+(set-and-coerce-property! 'VerticalArrangement1 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement6
+
+(add-component VerticalArrangement1 HorizontalArrangement HorizontalArrangement6 
+(set-and-coerce-property! 'HorizontalArrangement6 'Width -2 'number)
+
+)
+
+;;; localabel
+
+(add-component HorizontalArrangement6 Label localabel 
+(set-and-coerce-property! 'localabel 'BackgroundColor #x00000000 'number)
+
+(set-and-coerce-property! 'localabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'localabel 'Text "Localiza\u00e7\u00e3o   " 'text)
+
+(set-and-coerce-property! 'localabel 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'localabel 'TextColor #x00000000 'number)
+
+)
+
+;;; VerticalArrangement17
+
+(add-component HorizontalArrangement6 VerticalArrangement VerticalArrangement17 
+(set-and-coerce-property! 'VerticalArrangement17 'Width -2 'number)
+
+)
+
+;;; Pegacoordalt
+
+(add-component VerticalArrangement17 Button Pegacoordalt 
+(set-and-coerce-property! 'Pegacoordalt 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Pegacoordalt 'Shape 1 'number)
+
+(set-and-coerce-property! 'Pegacoordalt 'Text "Obter Coordenadas e Altitude" 'text)
+
+(set-and-coerce-property! 'Pegacoordalt 'Width -2 'number)
+
+)
+
+(define-event Pegacoordalt Click()(set-this-form)
+    (set-and-coerce-property! 'LocationSensor1 'Enabled #t 'boolean))
+;;; Aviso
+
+(add-component VerticalArrangement17 Label Aviso 
+(set-and-coerce-property! 'Aviso 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Aviso 'FontSize 10 'number)
+
+(set-and-coerce-property! 'Aviso 'Text "(esta fun\u00e7\u00e3o s\u00f3 funciona em aparelhos que possuam o dispositivo GPS e em local que possua recep\u00e7\u00e3o dos sat\u00e9lites)" 'text)
+
+(set-and-coerce-property! 'Aviso 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Aviso 'TextColor #xFFFF0000 'number)
+
+(set-and-coerce-property! 'Aviso 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement15
+
+(add-component VerticalArrangement1 HorizontalArrangement HorizontalArrangement15 
+(set-and-coerce-property! 'HorizontalArrangement15 'Width -2 'number)
+
+)
+
+;;; precatuallabel
+
+(add-component HorizontalArrangement15 Label precatuallabel 
+(set-and-coerce-property! 'precatuallabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'precatuallabel 'Text "Precis\u00e3o atual   " 'text)
+
+(set-and-coerce-property! 'precatuallabel 'Width -2 'number)
+
+)
+
+;;; precatualvalor
+
+(add-component HorizontalArrangement15 Label precatualvalor 
+(set-and-coerce-property! 'precatualvalor 'Text "Precis\u00e3o n\u00e3o dispon\u00edvel" 'text)
+
+(set-and-coerce-property! 'precatualvalor 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement7
+
+(add-component VerticalArrangement1 HorizontalArrangement HorizontalArrangement7 
+(set-and-coerce-property! 'HorizontalArrangement7 'Width -2 'number)
+
+)
+
+;;; latlabel
+
+(add-component HorizontalArrangement7 Label latlabel 
+(set-and-coerce-property! 'latlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'latlabel 'Text "Latitude   " 'text)
+
+(set-and-coerce-property! 'latlabel 'Width -2 'number)
+
+)
+
+;;; latvalor
+
+(add-component HorizontalArrangement7 Label latvalor 
+(set-and-coerce-property! 'latvalor 'Text "0.0" 'text)
+
+(set-and-coerce-property! 'latvalor 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement8
+
+(add-component VerticalArrangement1 HorizontalArrangement HorizontalArrangement8 
+(set-and-coerce-property! 'HorizontalArrangement8 'Width -2 'number)
+
+)
+
+;;; longlabel
+
+(add-component HorizontalArrangement8 Label longlabel 
+(set-and-coerce-property! 'longlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'longlabel 'Text "Longitude   " 'text)
+
+(set-and-coerce-property! 'longlabel 'Width -2 'number)
+
+)
+
+;;; longvalor
+
+(add-component HorizontalArrangement8 Label longvalor 
+(set-and-coerce-property! 'longvalor 'Text "0.0" 'text)
+
+(set-and-coerce-property! 'longvalor 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement13
+
+(add-component VerticalArrangement1 HorizontalArrangement HorizontalArrangement13 
+(set-and-coerce-property! 'HorizontalArrangement13 'Width -2 'number)
+
+)
+
+;;; altlabel
+
+(add-component HorizontalArrangement13 Label altlabel 
+(set-and-coerce-property! 'altlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'altlabel 'Text "Altitude   " 'text)
+
+(set-and-coerce-property! 'altlabel 'Width -2 'number)
+
+)
+
+;;; altvalor
+
+(add-component HorizontalArrangement13 Label altvalor 
+(set-and-coerce-property! 'altvalor 'Text "0.0" 'text)
+
+(set-and-coerce-property! 'altvalor 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement2
+
+(add-component VerticalArrangement2 HorizontalArrangement HorizontalArrangement2 
+(set-and-coerce-property! 'HorizontalArrangement2 'Width -2 'number)
+
+)
+
+;;; bairrolabel
+
+(add-component HorizontalArrangement2 Label bairrolabel 
+(set-and-coerce-property! 'bairrolabel 'BackgroundColor #x00000000 'number)
+
+(set-and-coerce-property! 'bairrolabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'bairrolabel 'Text "Bairro   " 'text)
+
+(set-and-coerce-property! 'bairrolabel 'TextColor #x00000000 'number)
+
+)
+
+;;; bairronome
+
+(add-component HorizontalArrangement2 TextBox bairronome 
+(set-and-coerce-property! 'bairronome 'Hint "Bairro" 'text)
+
+(set-and-coerce-property! 'bairronome 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement3
+
+(add-component VerticalArrangement2 HorizontalArrangement HorizontalArrangement3 
+(set-and-coerce-property! 'HorizontalArrangement3 'Width -2 'number)
+
+)
+
+;;; distralabel
+
+(add-component HorizontalArrangement3 Label distralabel 
+(set-and-coerce-property! 'distralabel 'BackgroundColor #x00000000 'number)
+
+(set-and-coerce-property! 'distralabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'distralabel 'Text "Distrito ou R.A.   " 'text)
+
+(set-and-coerce-property! 'distralabel 'TextColor #x00000000 'number)
+
+)
+
+;;; distritoranome
+
+(add-component HorizontalArrangement3 TextBox distritoranome 
+(set-and-coerce-property! 'distritoranome 'Hint "Distrito ou Regi\u00e3o Administrativa" 'text)
+
+(set-and-coerce-property! 'distritoranome 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement4
+
+(add-component VerticalArrangement2 HorizontalArrangement HorizontalArrangement4 
+(set-and-coerce-property! 'HorizontalArrangement4 'Width -2 'number)
+
+)
+
+;;; munlabel
+
+(add-component HorizontalArrangement4 Label munlabel 
+(set-and-coerce-property! 'munlabel 'BackgroundColor #x00000000 'number)
+
+(set-and-coerce-property! 'munlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'munlabel 'Text "Munic\u00edpio   " 'text)
+
+(set-and-coerce-property! 'munlabel 'TextColor #x00000000 'number)
+
+)
+
+;;; municipionome
+
+(add-component HorizontalArrangement4 TextBox municipionome 
+(set-and-coerce-property! 'municipionome 'Hint "Munic\u00edpio/Cidade" 'text)
+
+(set-and-coerce-property! 'municipionome 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement5
+
+(add-component VerticalArrangement2 HorizontalArrangement HorizontalArrangement5 
+(set-and-coerce-property! 'HorizontalArrangement5 'Width -2 'number)
+
+)
+
+;;; uflabel
+
+(add-component HorizontalArrangement5 Label uflabel 
+(set-and-coerce-property! 'uflabel 'BackgroundColor #x00000000 'number)
+
+(set-and-coerce-property! 'uflabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'uflabel 'Text "Estado   " 'text)
+
+(set-and-coerce-property! 'uflabel 'TextColor #x00000000 'number)
+
+)
+
+;;; estadonome
+
+(add-component HorizontalArrangement5 TextBox estadonome 
+(set-and-coerce-property! 'estadonome 'Hint "Estado/UF" 'text)
+
+(set-and-coerce-property! 'estadonome 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement9
+
+(add-component VerticalArrangement2 HorizontalArrangement HorizontalArrangement9 
+(set-and-coerce-property! 'HorizontalArrangement9 'Width -2 'number)
+
+)
+
+;;; proplabel
+
+(add-component HorizontalArrangement9 Label proplabel 
+(set-and-coerce-property! 'proplabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'proplabel 'Text "Propriet\u00e1rio   " 'text)
+
+)
+
+;;; proprietarionome
+
+(add-component HorizontalArrangement9 TextBox proprietarionome 
+(set-and-coerce-property! 'proprietarionome 'Hint "Propriet\u00e1rio que consta no documento" 'text)
+
+(set-and-coerce-property! 'proprietarionome 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement60
+
+(add-component VerticalArrangement2 HorizontalArrangement HorizontalArrangement60 
+(set-and-coerce-property! 'HorizontalArrangement60 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement60 'Width -2 'number)
+
+)
+
+;;; limpaitens
+
+(add-component HorizontalArrangement60 ListPicker limpaitens 
+(set-and-coerce-property! 'limpaitens 'ElementsFromString "Bairro, Distrito ou R.A., Munic\u00edpio, Estado, Propriet\u00e1rio, Todos" 'text)
+
+(set-and-coerce-property! 'limpaitens 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limpaitens 'Text "Limpar itens" 'text)
+
+)
+
+(define-event limpaitens AfterPicking()(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaitens 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'bairronome 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaitens 'SelectionIndex) 2) '(any any) "=") (begin   (set-and-coerce-property! 'distritoranome 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaitens 'SelectionIndex) 3) '(any any) "=") (begin   (set-and-coerce-property! 'municipionome 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaitens 'SelectionIndex) 4) '(any any) "=") (begin   (set-and-coerce-property! 'estadonome 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaitens 'SelectionIndex) 5) '(any any) "=") (begin   (set-and-coerce-property! 'proprietarionome 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaitens 'SelectionIndex) 6) '(any any) "=") (begin   (set-and-coerce-property! 'bairronome 'Text "" 'text)(set-and-coerce-property! 'distritoranome 'Text "" 'text)(set-and-coerce-property! 'municipionome 'Text "" 'text)(set-and-coerce-property! 'estadonome 'Text "" 'text)(set-and-coerce-property! 'proprietarionome 'Text "" 'text))))))))))))))
+;;; VerticalArrangement3
+
+(add-component DADOS VerticalArrangement VerticalArrangement3 
+(set-and-coerce-property! 'VerticalArrangement3 'Width -2 'number)
+
+)
+
+;;; Label10
+
+(add-component VerticalArrangement3 Label Label10 
+(set-and-coerce-property! 'Label10 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label10 'FontSize 25 'number)
+
+(set-and-coerce-property! 'Label10 'Text "SERVI\u00c7OS P\u00daBLICOS" 'text)
+
+(set-and-coerce-property! 'Label10 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label10 'Width -2 'number)
+
+)
+
+;;; Label11
+
+(add-component VerticalArrangement3 Label Label11 
+(set-and-coerce-property! 'Label11 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label11 'FontSize 20 'number)
+
+(set-and-coerce-property! 'Label11 'Text "(at\u00e9 1.000 metros)" 'text)
+
+(set-and-coerce-property! 'Label11 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label11 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement10
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement10 
+(set-and-coerce-property! 'HorizontalArrangement10 'Width -2 'number)
+
+)
+
+;;; redeagualabel
+
+(add-component HorizontalArrangement10 Label redeagualabel 
+(set-and-coerce-property! 'redeagualabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'redeagualabel 'Text "Rede de \u00c1gua Pot\u00e1vel   " 'text)
+
+(set-and-coerce-property! 'redeagualabel 'Width -2 'number)
+
+)
+
+;;; redeagua
+
+(add-component HorizontalArrangement10 ListPicker redeagua 
+(set-and-coerce-property! 'redeagua 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'redeagua 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'redeagua 'Width -2 'number)
+
+)
+
+(define-event redeagua AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'redeagua 'Enabled #f 'boolean)(set-and-coerce-property! 'redeagua 'Text (get-property 'redeagua 'Selection) 'text))
+;;; HorizontalArrangement11
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement11 
+(set-and-coerce-property! 'HorizontalArrangement11 'Width -2 'number)
+
+)
+
+;;; esgsanlabel
+
+(add-component HorizontalArrangement11 Label esgsanlabel 
+(set-and-coerce-property! 'esgsanlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'esgsanlabel 'Text "Esgotos Sanit\u00e1rios   " 'text)
+
+(set-and-coerce-property! 'esgsanlabel 'Width -2 'number)
+
+)
+
+;;; esgotosanit
+
+(add-component HorizontalArrangement11 ListPicker esgotosanit 
+(set-and-coerce-property! 'esgotosanit 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'esgotosanit 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'esgotosanit 'Width -2 'number)
+
+)
+
+(define-event esgotosanit AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'esgotosanit 'Enabled #f 'boolean)(set-and-coerce-property! 'esgotosanit 'Text (get-property 'esgotosanit 'Selection) 'text))
+;;; HorizontalArrangement12
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement12 
+(set-and-coerce-property! 'HorizontalArrangement12 'Width -2 'number)
+
+)
+
+;;; esgpluvlabel
+
+(add-component HorizontalArrangement12 Label esgpluvlabel 
+(set-and-coerce-property! 'esgpluvlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'esgpluvlabel 'Text "Esgotos Pluviais   " 'text)
+
+(set-and-coerce-property! 'esgpluvlabel 'Width -2 'number)
+
+)
+
+;;; esgotopluv
+
+(add-component HorizontalArrangement12 ListPicker esgotopluv 
+(set-and-coerce-property! 'esgotopluv 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'esgotopluv 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'esgotopluv 'Width -2 'number)
+
+)
+
+(define-event esgotopluv AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'esgotopluv 'Enabled #f 'boolean)(set-and-coerce-property! 'esgotopluv 'Text (get-property 'esgotopluv 'Selection) 'text))
+;;; HorizontalArrangement16
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement16 
+(set-and-coerce-property! 'HorizontalArrangement16 'Width -2 'number)
+
+)
+
+;;; eneletlabel
+
+(add-component HorizontalArrangement16 Label eneletlabel 
+(set-and-coerce-property! 'eneletlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'eneletlabel 'Text "Energia El\u00e9trica   " 'text)
+
+(set-and-coerce-property! 'eneletlabel 'Width -2 'number)
+
+)
+
+;;; energelet
+
+(add-component HorizontalArrangement16 ListPicker energelet 
+(set-and-coerce-property! 'energelet 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'energelet 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'energelet 'Width -2 'number)
+
+)
+
+(define-event energelet AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'energelet 'Enabled #f 'boolean)(set-and-coerce-property! 'energelet 'Text (get-property 'energelet 'Selection) 'text))
+;;; HorizontalArrangement17
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement17 
+(set-and-coerce-property! 'HorizontalArrangement17 'Width -2 'number)
+
+)
+
+;;; ilupublabel
+
+(add-component HorizontalArrangement17 Label ilupublabel 
+(set-and-coerce-property! 'ilupublabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'ilupublabel 'Text "Ilumina\u00e7\u00e3o P\u00fablica   " 'text)
+
+(set-and-coerce-property! 'ilupublabel 'Width -2 'number)
+
+)
+
+;;; ilumpubl
+
+(add-component HorizontalArrangement17 ListPicker ilumpubl 
+(set-and-coerce-property! 'ilumpubl 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'ilumpubl 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'ilumpubl 'Width -2 'number)
+
+)
+
+(define-event ilumpubl AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'ilumpubl 'Enabled #f 'boolean)(set-and-coerce-property! 'ilumpubl 'Text (get-property 'ilumpubl 'Selection) 'text))
+;;; HorizontalArrangement20
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement20 
+(set-and-coerce-property! 'HorizontalArrangement20 'Width -2 'number)
+
+)
+
+;;; litelabel
+
+(add-component HorizontalArrangement20 Label litelabel 
+(set-and-coerce-property! 'litelabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'litelabel 'Text "Linhas Telef\u00f4nicas   " 'text)
+
+(set-and-coerce-property! 'litelabel 'Width -2 'number)
+
+)
+
+;;; linhatel
+
+(add-component HorizontalArrangement20 ListPicker linhatel 
+(set-and-coerce-property! 'linhatel 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'linhatel 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'linhatel 'Width -2 'number)
+
+)
+
+(define-event linhatel AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'linhatel 'Enabled #f 'boolean)(set-and-coerce-property! 'linhatel 'Text (get-property 'linhatel 'Selection) 'text))
+;;; HorizontalArrangement19
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement19 
+(set-and-coerce-property! 'HorizontalArrangement19 'Width -2 'number)
+
+)
+
+;;; gascanlabel
+
+(add-component HorizontalArrangement19 Label gascanlabel 
+(set-and-coerce-property! 'gascanlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'gascanlabel 'Text "G\u00e1s Canalizado   " 'text)
+
+(set-and-coerce-property! 'gascanlabel 'Width -2 'number)
+
+)
+
+;;; gascanalizado
+
+(add-component HorizontalArrangement19 ListPicker gascanalizado 
+(set-and-coerce-property! 'gascanalizado 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'gascanalizado 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'gascanalizado 'Width -2 'number)
+
+)
+
+(define-event gascanalizado AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'gascanalizado 'Enabled #f 'boolean)(set-and-coerce-property! 'gascanalizado 'Text (get-property 'gascanalizado 'Selection) 'text))
+;;; HorizontalArrangement54
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement54 
+(set-and-coerce-property! 'HorizontalArrangement54 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement54 'Width -2 'number)
+
+)
+
+;;; limpaservpub
+
+(add-component HorizontalArrangement54 ListPicker limpaservpub 
+(set-and-coerce-property! 'limpaservpub 'ElementsFromString "Rede de \u00c1gua Pot\u00e1vel, Esgotos Sanit\u00e1rios, Esgotos Pluviais, Energia El\u00e9trica, Ilumina\u00e7\u00e3o P\u00fablica, Linhas Telef\u00f4nicas, G\u00e1s Canalizado, Todos" 'text)
+
+(set-and-coerce-property! 'limpaservpub 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limpaservpub 'Shape 1 'number)
+
+(set-and-coerce-property! 'limpaservpub 'Text "Alterar sele\u00e7\u00f5es de servi\u00e7os p\u00fablicos" 'text)
+
+)
+
+(define-event limpaservpub AfterPicking()(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservpub 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'redeagua 'Enabled #t 'boolean)(set-and-coerce-property! 'redeagua 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'redeagua 'Selection "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservpub 'SelectionIndex) 2) '(any any) "=") (begin   (set-and-coerce-property! 'esgotosanit 'Enabled #t 'boolean)(set-and-coerce-property! 'esgotosanit 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'esgotosanit 'Selection "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservpub 'SelectionIndex) 3) '(any any) "=") (begin   (set-and-coerce-property! 'esgotopluv 'Enabled #t 'boolean)(set-and-coerce-property! 'esgotopluv 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'esgotopluv 'Selection "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservpub 'SelectionIndex) 4) '(any any) "=") (begin   (set-and-coerce-property! 'energelet 'Enabled #t 'boolean)(set-and-coerce-property! 'energelet 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'energelet 'Selection "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservpub 'SelectionIndex) 5) '(any any) "=") (begin   (set-and-coerce-property! 'ilumpubl 'Enabled #t 'boolean)(set-and-coerce-property! 'ilumpubl 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'ilumpubl 'Selection "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservpub 'SelectionIndex) 6) '(any any) "=") (begin   (set-and-coerce-property! 'linhatel 'Enabled #t 'boolean)(set-and-coerce-property! 'linhatel 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'linhatel 'Selection "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservpub 'SelectionIndex) 7) '(any any) "=") (begin   (set-and-coerce-property! 'gascanalizado 'Enabled #t 'boolean)(set-and-coerce-property! 'gascanalizado 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'gascanalizado 'Selection "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservpub 'SelectionIndex) 8) '(any any) "=") (begin   (set-and-coerce-property! 'redeagua 'Enabled #t 'boolean)(set-and-coerce-property! 'redeagua 'Selection "" 'text)(set-and-coerce-property! 'redeagua 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'esgotosanit 'Enabled #t 'boolean)(set-and-coerce-property! 'esgotosanit 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'esgotosanit 'Selection "" 'text)(set-and-coerce-property! 'esgotopluv 'Enabled #t 'boolean)(set-and-coerce-property! 'esgotopluv 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'esgotopluv 'Selection "" 'text)(set-and-coerce-property! 'energelet 'Enabled #t 'boolean)(set-and-coerce-property! 'energelet 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'energelet 'Selection "" 'text)(set-and-coerce-property! 'ilumpubl 'Enabled #t 'boolean)(set-and-coerce-property! 'ilumpubl 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'ilumpubl 'Selection "" 'text)(set-and-coerce-property! 'linhatel 'Enabled #t 'boolean)(set-and-coerce-property! 'linhatel 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'linhatel 'Selection "" 'text)(set-and-coerce-property! 'gascanalizado 'Enabled #t 'boolean)(set-and-coerce-property! 'gascanalizado 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'gascanalizado 'Selection "" 'text))))))))))))))))))
+;;; HorizontalArrangement18
+
+(add-component VerticalArrangement3 HorizontalArrangement HorizontalArrangement18 
+(set-and-coerce-property! 'HorizontalArrangement18 'Width -2 'number)
+
+)
+
+;;; outroservpublabel
+
+(add-component HorizontalArrangement18 Label outroservpublabel 
+(set-and-coerce-property! 'outroservpublabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'outroservpublabel 'Text "Outros   " 'text)
+
+)
+
+;;; outropublico
+
+(add-component HorizontalArrangement18 TextBox outropublico 
+(set-and-coerce-property! 'outropublico 'Hint "Quais? (separar por v\u00edrgula mais que um)" 'text)
+
+(set-and-coerce-property! 'outropublico 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement4
+
+(add-component DADOS VerticalArrangement VerticalArrangement4 
+(set-and-coerce-property! 'VerticalArrangement4 'Width -2 'number)
+
+)
+
+;;; Label23
+
+(add-component VerticalArrangement4 Label Label23 
+(set-and-coerce-property! 'Label23 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label23 'FontSize 25 'number)
+
+(set-and-coerce-property! 'Label23 'Text "SERVI\u00c7OS COMUNIT\u00c1RIOS" 'text)
+
+(set-and-coerce-property! 'Label23 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label23 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement27
+
+(add-component VerticalArrangement4 HorizontalArrangement HorizontalArrangement27 
+(set-and-coerce-property! 'HorizontalArrangement27 'Width -2 'number)
+
+)
+
+;;; escprimlabel
+
+(add-component HorizontalArrangement27 Label escprimlabel 
+(set-and-coerce-property! 'escprimlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'escprimlabel 'Text "Escola Prim\u00e1ria   " 'text)
+
+(set-and-coerce-property! 'escprimlabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement18
+
+(add-component HorizontalArrangement27 VerticalArrangement VerticalArrangement18 
+(set-and-coerce-property! 'VerticalArrangement18 'Width -2 'number)
+
+)
+
+;;; escprim
+
+(add-component VerticalArrangement18 ListPicker escprim 
+(set-and-coerce-property! 'escprim 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'escprim 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'escprim 'Width -2 'number)
+
+)
+
+(define-event escprim AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'escprim 'Enabled #f 'boolean)(set-and-coerce-property! 'escprim 'Text (get-property 'escprim 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'escprim 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantescprim 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantescprim 'Visible #f 'boolean)(set-and-coerce-property! 'quantescprim 'Text "" 'text))))
+;;; quantescprim
+
+(add-component VerticalArrangement18 TextBox quantescprim 
+(set-and-coerce-property! 'quantescprim 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quantescprim 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quantescprim 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantescprim 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement26
+
+(add-component VerticalArrangement4 HorizontalArrangement HorizontalArrangement26 
+(set-and-coerce-property! 'HorizontalArrangement26 'Width -2 'number)
+
+)
+
+;;; escseclabel
+
+(add-component HorizontalArrangement26 Label escseclabel 
+(set-and-coerce-property! 'escseclabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'escseclabel 'Text "Escola Secund\u00e1ria   " 'text)
+
+(set-and-coerce-property! 'escseclabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement19
+
+(add-component HorizontalArrangement26 VerticalArrangement VerticalArrangement19 
+(set-and-coerce-property! 'VerticalArrangement19 'Width -2 'number)
+
+)
+
+;;; escsec
+
+(add-component VerticalArrangement19 ListPicker escsec 
+(set-and-coerce-property! 'escsec 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'escsec 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'escsec 'Width -2 'number)
+
+)
+
+(define-event escsec AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'escsec 'Enabled #f 'boolean)(set-and-coerce-property! 'escsec 'Text (get-property 'escsec 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'escsec 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantescsec 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantescsec 'Visible #f 'boolean)(set-and-coerce-property! 'quantescsec 'Text "" 'text))))
+;;; quantescsec
+
+(add-component VerticalArrangement19 TextBox quantescsec 
+(set-and-coerce-property! 'quantescsec 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quantescsec 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quantescsec 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantescsec 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement25
+
+(add-component VerticalArrangement4 HorizontalArrangement HorizontalArrangement25 
+(set-and-coerce-property! 'HorizontalArrangement25 'Width -2 'number)
+
+)
+
+;;; postmedlabel
+
+(add-component HorizontalArrangement25 Label postmedlabel 
+(set-and-coerce-property! 'postmedlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'postmedlabel 'Text "Posto M\u00e9dico   " 'text)
+
+(set-and-coerce-property! 'postmedlabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement20
+
+(add-component HorizontalArrangement25 VerticalArrangement VerticalArrangement20 
+(set-and-coerce-property! 'VerticalArrangement20 'Width -2 'number)
+
+)
+
+;;; postomed
+
+(add-component VerticalArrangement20 ListPicker postomed 
+(set-and-coerce-property! 'postomed 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'postomed 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'postomed 'Width -2 'number)
+
+)
+
+(define-event postomed AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'postomed 'Enabled #f 'boolean)(set-and-coerce-property! 'postomed 'Text (get-property 'postomed 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'postomed 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantpostomed 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantpostomed 'Visible #f 'boolean)(set-and-coerce-property! 'quantpostomed 'Text "" 'text))))
+;;; quantpostomed
+
+(add-component VerticalArrangement20 TextBox quantpostomed 
+(set-and-coerce-property! 'quantpostomed 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quantpostomed 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quantpostomed 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantpostomed 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement24
+
+(add-component VerticalArrangement4 HorizontalArrangement HorizontalArrangement24 
+(set-and-coerce-property! 'HorizontalArrangement24 'Width -2 'number)
+
+)
+
+;;; polabel
+
+(add-component HorizontalArrangement24 Label polabel 
+(set-and-coerce-property! 'polabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'polabel 'Text "Pol\u00edcia   " 'text)
+
+(set-and-coerce-property! 'polabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement21
+
+(add-component HorizontalArrangement24 VerticalArrangement VerticalArrangement21 
+(set-and-coerce-property! 'VerticalArrangement21 'Width -2 'number)
+
+)
+
+;;; policia
+
+(add-component VerticalArrangement21 ListPicker policia 
+(set-and-coerce-property! 'policia 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'policia 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'policia 'Width -2 'number)
+
+)
+
+(define-event policia AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'policia 'Enabled #f 'boolean)(set-and-coerce-property! 'policia 'Text (get-property 'policia 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'policia 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantpolicia 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantpolicia 'Visible #f 'boolean)(set-and-coerce-property! 'quantpolicia 'Text "" 'text))))
+;;; quantpolicia
+
+(add-component VerticalArrangement21 TextBox quantpolicia 
+(set-and-coerce-property! 'quantpolicia 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quantpolicia 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quantpolicia 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantpolicia 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement23
+
+(add-component VerticalArrangement4 HorizontalArrangement HorizontalArrangement23 
+(set-and-coerce-property! 'HorizontalArrangement23 'Width -2 'number)
+
+)
+
+;;; temprelabel
+
+(add-component HorizontalArrangement23 Label temprelabel 
+(set-and-coerce-property! 'temprelabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'temprelabel 'Text "Templos Religiosos   " 'text)
+
+(set-and-coerce-property! 'temprelabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement22
+
+(add-component HorizontalArrangement23 VerticalArrangement VerticalArrangement22 
+(set-and-coerce-property! 'VerticalArrangement22 'Width -2 'number)
+
+)
+
+;;; templorel
+
+(add-component VerticalArrangement22 ListPicker templorel 
+(set-and-coerce-property! 'templorel 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'templorel 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'templorel 'Width -2 'number)
+
+)
+
+(define-event templorel AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'templorel 'Enabled #f 'boolean)(set-and-coerce-property! 'templorel 'Text (get-property 'templorel 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'templorel 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quanttemplorel 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quanttemplorel 'Visible #f 'boolean)(set-and-coerce-property! 'quanttemplorel 'Text "" 'text))))
+;;; quanttemplorel
+
+(add-component VerticalArrangement22 TextBox quanttemplorel 
+(set-and-coerce-property! 'quanttemplorel 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quanttemplorel 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quanttemplorel 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quanttemplorel 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement22
+
+(add-component VerticalArrangement4 HorizontalArrangement HorizontalArrangement22 
+(set-and-coerce-property! 'HorizontalArrangement22 'Width -2 'number)
+
+)
+
+;;; reclazbel
+
+(add-component HorizontalArrangement22 Label reclazbel 
+(set-and-coerce-property! 'reclazbel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'reclazbel 'Text "Recrea\u00e7\u00e3o e Lazer   " 'text)
+
+(set-and-coerce-property! 'reclazbel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement23
+
+(add-component HorizontalArrangement22 VerticalArrangement VerticalArrangement23 
+(set-and-coerce-property! 'VerticalArrangement23 'Width -2 'number)
+
+)
+
+;;; reclazer
+
+(add-component VerticalArrangement23 ListPicker reclazer 
+(set-and-coerce-property! 'reclazer 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'reclazer 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'reclazer 'Width -2 'number)
+
+)
+
+(define-event reclazer AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'reclazer 'Enabled #f 'boolean)(set-and-coerce-property! 'reclazer 'Text (get-property 'reclazer 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'reclazer 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantreclazer 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantreclazer 'Visible #f 'boolean)(set-and-coerce-property! 'quantreclazer 'Text "" 'text))))
+;;; quantreclazer
+
+(add-component VerticalArrangement23 TextBox quantreclazer 
+(set-and-coerce-property! 'quantreclazer 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quantreclazer 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quantreclazer 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantreclazer 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement21
+
+(add-component VerticalArrangement4 HorizontalArrangement HorizontalArrangement21 
+(set-and-coerce-property! 'HorizontalArrangement21 'Width -2 'number)
+
+)
+
+;;; outroservcomlabel
+
+(add-component HorizontalArrangement21 Label outroservcomlabel 
+(set-and-coerce-property! 'outroservcomlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'outroservcomlabel 'Text "Outros   " 'text)
+
+(set-and-coerce-property! 'outroservcomlabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement29
+
+(add-component HorizontalArrangement21 VerticalArrangement VerticalArrangement29 
+(set-and-coerce-property! 'VerticalArrangement29 'Width -2 'number)
+
+)
+
+;;; outroservcom
+
+(add-component VerticalArrangement29 ListPicker outroservcom 
+(set-and-coerce-property! 'outroservcom 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'outroservcom 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'outroservcom 'Width -2 'number)
+
+)
+
+(define-event outroservcom AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'outroservcom 'Enabled #f 'boolean)(set-and-coerce-property! 'outroservcom 'Text (get-property 'outroservcom 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'outroservcom 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'qualoutroservcom 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'qualoutroservcom 'Visible #f 'boolean)(set-and-coerce-property! 'qualoutroservcom 'Text "" 'text))))
+;;; qualoutroservcom
+
+(add-component VerticalArrangement29 TextBox qualoutroservcom 
+(set-and-coerce-property! 'qualoutroservcom 'Hint "Quais? (separar por v\u00edrgula mais que um)" 'text)
+
+(set-and-coerce-property! 'qualoutroservcom 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'qualoutroservcom 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement55
+
+(add-component VerticalArrangement4 HorizontalArrangement HorizontalArrangement55 
+(set-and-coerce-property! 'HorizontalArrangement55 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement55 'Width -2 'number)
+
+)
+
+;;; limpaservcom
+
+(add-component HorizontalArrangement55 ListPicker limpaservcom 
+(set-and-coerce-property! 'limpaservcom 'ElementsFromString "Escola Prim\u00e1ria, Escola Secund\u00e1ria, Posto M\u00e9dico, Pol\u00edcia, Templos Religiosos, Recrea\u00e7\u00e3o e Lazer, Outros, Todos" 'text)
+
+(set-and-coerce-property! 'limpaservcom 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limpaservcom 'Shape 1 'number)
+
+(set-and-coerce-property! 'limpaservcom 'Text "Alterar sele\u00e7\u00f5es de servi\u00e7os comunit\u00e1rios" 'text)
+
+)
+
+(define-event limpaservcom AfterPicking()(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservcom 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'escprim 'Enabled #t 'boolean)(set-and-coerce-property! 'escprim 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantescprim 'Text "" 'text)(set-and-coerce-property! 'quantescprim 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservcom 'SelectionIndex) 2) '(any any) "=") (begin   (set-and-coerce-property! 'escsec 'Enabled #t 'boolean)(set-and-coerce-property! 'escsec 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantescsec 'Text "" 'text)(set-and-coerce-property! 'quantescsec 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservcom 'SelectionIndex) 3) '(any any) "=") (begin   (set-and-coerce-property! 'postomed 'Enabled #t 'boolean)(set-and-coerce-property! 'postomed 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantpostomed 'Text "" 'text)(set-and-coerce-property! 'quantpostomed 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservcom 'SelectionIndex) 4) '(any any) "=") (begin   (set-and-coerce-property! 'policia 'Enabled #t 'boolean)(set-and-coerce-property! 'policia 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantpolicia 'Text "" 'text)(set-and-coerce-property! 'quantpolicia 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservcom 'SelectionIndex) 5) '(any any) "=") (begin   (set-and-coerce-property! 'templorel 'Enabled #t 'boolean)(set-and-coerce-property! 'templorel 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quanttemplorel 'Text "" 'text)(set-and-coerce-property! 'quanttemplorel 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservcom 'SelectionIndex) 6) '(any any) "=") (begin   (set-and-coerce-property! 'reclazer 'Enabled #t 'boolean)(set-and-coerce-property! 'reclazer 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantreclazer 'Text "" 'text)(set-and-coerce-property! 'quantreclazer 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservcom 'SelectionIndex) 7) '(any any) "=") (begin   (set-and-coerce-property! 'outroservcom 'Enabled #t 'boolean)(set-and-coerce-property! 'outroservcom 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'qualoutroservcom 'Text "" 'text)(set-and-coerce-property! 'qualoutroservcom 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservcom 'SelectionIndex) 8) '(any any) "=") (begin   (set-and-coerce-property! 'escprim 'Enabled #t 'boolean)(set-and-coerce-property! 'escsec 'Enabled #t 'boolean)(set-and-coerce-property! 'postomed 'Enabled #t 'boolean)(set-and-coerce-property! 'policia 'Enabled #t 'boolean)(set-and-coerce-property! 'templorel 'Enabled #t 'boolean)(set-and-coerce-property! 'reclazer 'Enabled #t 'boolean)(set-and-coerce-property! 'outroservcom 'Enabled #t 'boolean)(set-and-coerce-property! 'quantescprim 'Text "" 'text)(set-and-coerce-property! 'quantescsec 'Text "" 'text)(set-and-coerce-property! 'quantpostomed 'Text "" 'text)(set-and-coerce-property! 'quantpolicia 'Text "" 'text)(set-and-coerce-property! 'quanttemplorel 'Text "" 'text)(set-and-coerce-property! 'quantreclazer 'Text "" 'text)(set-and-coerce-property! 'qualoutroservcom 'Text "" 'text)(set-and-coerce-property! 'quantescprim 'Visible #f 'boolean)(set-and-coerce-property! 'quantescsec 'Visible #f 'boolean)(set-and-coerce-property! 'quantpostomed 'Visible #f 'boolean)(set-and-coerce-property! 'quantpolicia 'Visible #f 'boolean)(set-and-coerce-property! 'quanttemplorel 'Visible #f 'boolean)(set-and-coerce-property! 'quantreclazer 'Visible #f 'boolean)(set-and-coerce-property! 'qualoutroservcom 'Visible #f 'boolean)(set-and-coerce-property! 'escprim 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'escsec 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'postomed 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'policia 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'templorel 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'reclazer 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'outroservcom 'Text "OP\u00c7\u00d5ES" 'text))))))))))))))))))
+;;; VerticalArrangement5
+
+(add-component DADOS VerticalArrangement VerticalArrangement5 
+(set-and-coerce-property! 'VerticalArrangement5 'Width -2 'number)
+
+)
+
+;;; Label36
+
+(add-component VerticalArrangement5 Label Label36 
+(set-and-coerce-property! 'Label36 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label36 'FontSize 25 'number)
+
+(set-and-coerce-property! 'Label36 'Text "SERVI\u00c7OS GERAIS" 'text)
+
+(set-and-coerce-property! 'Label36 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label36 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement34
+
+(add-component VerticalArrangement5 HorizontalArrangement HorizontalArrangement34 
+(set-and-coerce-property! 'HorizontalArrangement34 'Width -2 'number)
+
+)
+
+;;; comlabel
+
+(add-component HorizontalArrangement34 Label comlabel 
+(set-and-coerce-property! 'comlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'comlabel 'Text "Com\u00e9rcio   " 'text)
+
+(set-and-coerce-property! 'comlabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement24
+
+(add-component HorizontalArrangement34 VerticalArrangement VerticalArrangement24 
+(set-and-coerce-property! 'VerticalArrangement24 'Width -2 'number)
+
+)
+
+;;; comercio
+
+(add-component VerticalArrangement24 ListPicker comercio 
+(set-and-coerce-property! 'comercio 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'comercio 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'comercio 'Width -2 'number)
+
+)
+
+(define-event comercio AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'comercio 'Enabled #f 'boolean)(set-and-coerce-property! 'comercio 'Text (get-property 'comercio 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'comercio 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantcomercio 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantcomercio 'Visible #f 'boolean)(set-and-coerce-property! 'quantcomercio 'Text "" 'text))))
+;;; quantcomercio
+
+(add-component VerticalArrangement24 TextBox quantcomercio 
+(set-and-coerce-property! 'quantcomercio 'Hint "Quais? (separar por v\u00edrgula mais que um)" 'text)
+
+(set-and-coerce-property! 'quantcomercio 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantcomercio 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement33
+
+(add-component VerticalArrangement5 HorizontalArrangement HorizontalArrangement33 
+(set-and-coerce-property! 'HorizontalArrangement33 'Width -2 'number)
+
+)
+
+;;; superlabel
+
+(add-component HorizontalArrangement33 Label superlabel 
+(set-and-coerce-property! 'superlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'superlabel 'Text "Supermercados   " 'text)
+
+(set-and-coerce-property! 'superlabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement25
+
+(add-component HorizontalArrangement33 VerticalArrangement VerticalArrangement25 
+(set-and-coerce-property! 'VerticalArrangement25 'Width -2 'number)
+
+)
+
+;;; supermercados
+
+(add-component VerticalArrangement25 ListPicker supermercados 
+(set-and-coerce-property! 'supermercados 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'supermercados 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'supermercados 'Width -2 'number)
+
+)
+
+(define-event supermercados AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'supermercados 'Enabled #f 'boolean)(set-and-coerce-property! 'supermercados 'Text (get-property 'supermercados 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'supermercados 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantsupermercados 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantsupermercados 'Visible #f 'boolean)(set-and-coerce-property! 'quantsupermercados 'Text "" 'text))))
+;;; quantsupermercados
+
+(add-component VerticalArrangement25 TextBox quantsupermercados 
+(set-and-coerce-property! 'quantsupermercados 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quantsupermercados 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quantsupermercados 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantsupermercados 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement32
+
+(add-component VerticalArrangement5 HorizontalArrangement HorizontalArrangement32 
+(set-and-coerce-property! 'HorizontalArrangement32 'Width -2 'number)
+
+)
+
+;;; barerestlabel
+
+(add-component HorizontalArrangement32 Label barerestlabel 
+(set-and-coerce-property! 'barerestlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'barerestlabel 'Text "Bares e Restaurantes   " 'text)
+
+(set-and-coerce-property! 'barerestlabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement26
+
+(add-component HorizontalArrangement32 VerticalArrangement VerticalArrangement26 
+(set-and-coerce-property! 'VerticalArrangement26 'Width -2 'number)
+
+)
+
+;;; barerest
+
+(add-component VerticalArrangement26 ListPicker barerest 
+(set-and-coerce-property! 'barerest 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'barerest 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'barerest 'Width -2 'number)
+
+)
+
+(define-event barerest AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'barerest 'Enabled #f 'boolean)(set-and-coerce-property! 'barerest 'Text (get-property 'barerest 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'barerest 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantbarerest 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantbarerest 'Visible #f 'boolean)(set-and-coerce-property! 'quantbarerest 'Text "" 'text))))
+;;; quantbarerest
+
+(add-component VerticalArrangement26 TextBox quantbarerest 
+(set-and-coerce-property! 'quantbarerest 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quantbarerest 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quantbarerest 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantbarerest 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement31
+
+(add-component VerticalArrangement5 HorizontalArrangement HorizontalArrangement31 
+(set-and-coerce-property! 'HorizontalArrangement31 'Width -2 'number)
+
+)
+
+;;; farmlabel
+
+(add-component HorizontalArrangement31 Label farmlabel 
+(set-and-coerce-property! 'farmlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'farmlabel 'Text "Farm\u00e1cias" 'text)
+
+(set-and-coerce-property! 'farmlabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement27
+
+(add-component HorizontalArrangement31 VerticalArrangement VerticalArrangement27 
+(set-and-coerce-property! 'VerticalArrangement27 'Width -2 'number)
+
+)
+
+;;; farm
+
+(add-component VerticalArrangement27 ListPicker farm 
+(set-and-coerce-property! 'farm 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'farm 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'farm 'Width -2 'number)
+
+)
+
+(define-event farm AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'farm 'Enabled #f 'boolean)(set-and-coerce-property! 'farm 'Text (get-property 'farm 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'farm 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'quantfarm 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'quantfarm 'Visible #f 'boolean)(set-and-coerce-property! 'quantfarm 'Text "" 'text))))
+;;; quantfarm
+
+(add-component VerticalArrangement27 TextBox quantfarm 
+(set-and-coerce-property! 'quantfarm 'Hint "Quantos?" 'text)
+
+(set-and-coerce-property! 'quantfarm 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'quantfarm 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'quantfarm 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement30
+
+(add-component VerticalArrangement5 HorizontalArrangement HorizontalArrangement30 
+(set-and-coerce-property! 'HorizontalArrangement30 'Width -2 'number)
+
+)
+
+;;; outroservgeralabel
+
+(add-component HorizontalArrangement30 Label outroservgeralabel 
+(set-and-coerce-property! 'outroservgeralabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'outroservgeralabel 'Text "Outros   " 'text)
+
+(set-and-coerce-property! 'outroservgeralabel 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement28
+
+(add-component HorizontalArrangement30 VerticalArrangement VerticalArrangement28 
+(set-and-coerce-property! 'VerticalArrangement28 'Width -2 'number)
+
+)
+
+;;; outroservgeral
+
+(add-component VerticalArrangement28 ListPicker outroservgeral 
+(set-and-coerce-property! 'outroservgeral 'ElementsFromString "Possui, N\u00e3o possui" 'text)
+
+(set-and-coerce-property! 'outroservgeral 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'outroservgeral 'Width -2 'number)
+
+)
+
+(define-event outroservgeral AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'outroservgeral 'Enabled #f 'boolean)(set-and-coerce-property! 'outroservgeral 'Text (get-property 'outroservgeral 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'outroservgeral 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'qualservgeral 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'qualservgeral 'Visible #f 'boolean)(set-and-coerce-property! 'qualservgeral 'Text "" 'text))))
+;;; qualservgeral
+
+(add-component VerticalArrangement28 TextBox qualservgeral 
+(set-and-coerce-property! 'qualservgeral 'Hint "Quais? (separar por v\u00edrgula mais que um)" 'text)
+
+(set-and-coerce-property! 'qualservgeral 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'qualservgeral 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement56
+
+(add-component VerticalArrangement5 HorizontalArrangement HorizontalArrangement56 
+(set-and-coerce-property! 'HorizontalArrangement56 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement56 'Width -2 'number)
+
+)
+
+;;; limpaservgeral
+
+(add-component HorizontalArrangement56 ListPicker limpaservgeral 
+(set-and-coerce-property! 'limpaservgeral 'ElementsFromString "Com\u00e9rcio, Supermercados, Bares e Restaurantes, Farm\u00e1cias, Outros, Todos" 'text)
+
+(set-and-coerce-property! 'limpaservgeral 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limpaservgeral 'Shape 1 'number)
+
+(set-and-coerce-property! 'limpaservgeral 'Text "Alterar sele\u00e7\u00f5es de servi\u00e7os gerais" 'text)
+
+)
+
+(define-event limpaservgeral AfterPicking()(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservgeral 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'comercio 'Enabled #t 'boolean)(set-and-coerce-property! 'comercio 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantcomercio 'Text "" 'text)(set-and-coerce-property! 'quantcomercio 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservgeral 'SelectionIndex) 2) '(any any) "=") (begin   (set-and-coerce-property! 'supermercados 'Enabled #t 'boolean)(set-and-coerce-property! 'supermercados 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantsupermercados 'Text "" 'text)(set-and-coerce-property! 'quantsupermercados 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservgeral 'SelectionIndex) 3) '(any any) "=") (begin   (set-and-coerce-property! 'barerest 'Enabled #t 'boolean)(set-and-coerce-property! 'barerest 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantbarerest 'Text "" 'text)(set-and-coerce-property! 'quantbarerest 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservgeral 'SelectionIndex) 4) '(any any) "=") (begin   (set-and-coerce-property! 'farm 'Enabled #t 'boolean)(set-and-coerce-property! 'farm 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'quantfarm 'Text "" 'text)(set-and-coerce-property! 'quantfarm 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservgeral 'SelectionIndex) 5) '(any any) "=") (begin   (set-and-coerce-property! 'outroservgeral 'Enabled #t 'boolean)(set-and-coerce-property! 'outroservgeral 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'qualservgeral 'Text "" 'text)(set-and-coerce-property! 'qualservgeral 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpaservgeral 'SelectionIndex) 6) '(any any) "=") (begin   (set-and-coerce-property! 'comercio 'Enabled #t 'boolean)(set-and-coerce-property! 'supermercados 'Enabled #t 'boolean)(set-and-coerce-property! 'barerest 'Enabled #t 'boolean)(set-and-coerce-property! 'farm 'Enabled #t 'boolean)(set-and-coerce-property! 'outroservgeral 'Enabled #t 'boolean)(set-and-coerce-property! 'quantcomercio 'Text "" 'text)(set-and-coerce-property! 'quantsupermercados 'Text "" 'text)(set-and-coerce-property! 'quantbarerest 'Text "" 'text)(set-and-coerce-property! 'quantfarm 'Text "" 'text)(set-and-coerce-property! 'qualservgeral 'Text "" 'text)(set-and-coerce-property! 'quantcomercio 'Visible #f 'boolean)(set-and-coerce-property! 'quantsupermercados 'Visible #f 'boolean)(set-and-coerce-property! 'quantbarerest 'Visible #f 'boolean)(set-and-coerce-property! 'quantfarm 'Visible #f 'boolean)(set-and-coerce-property! 'qualservgeral 'Visible #f 'boolean)(set-and-coerce-property! 'comercio 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'supermercados 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'barerest 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'farm 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'outroservgeral 'Text "OP\u00c7\u00d5ES" 'text))))))))))))))
+;;; VerticalArrangement6
+
+(add-component DADOS VerticalArrangement VerticalArrangement6 
+(set-and-coerce-property! 'VerticalArrangement6 'Width -2 'number)
+
+)
+
+;;; Label45
+
+(add-component VerticalArrangement6 Label Label45 
+(set-and-coerce-property! 'Label45 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label45 'FontSize 25 'number)
+
+(set-and-coerce-property! 'Label45 'Text "TRANSPORTE" 'text)
+
+(set-and-coerce-property! 'Label45 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label45 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement36
+
+(add-component VerticalArrangement6 HorizontalArrangement HorizontalArrangement36 
+(set-and-coerce-property! 'HorizontalArrangement36 'Width -2 'number)
+
+)
+
+;;; distlabel
+
+(add-component HorizontalArrangement36 Label distlabel 
+(set-and-coerce-property! 'distlabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'distlabel 'Text "Dist\u00e2ncia   " 'text)
+
+)
+
+;;; distanciaponto
+
+(add-component HorizontalArrangement36 TextBox distanciaponto 
+(set-and-coerce-property! 'distanciaponto 'Hint "Quantos metros at\u00e9 o ponto mais pr\u00f3ximo?" 'text)
+
+(set-and-coerce-property! 'distanciaponto 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'distanciaponto 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement7
+
+(add-component DADOS VerticalArrangement VerticalArrangement7 
+(set-and-coerce-property! 'VerticalArrangement7 'AlignHorizontal 3 'number)
+
+(set-and-coerce-property! 'VerticalArrangement7 'Width -2 'number)
+
+)
+
+;;; reglabel
+
+(add-component VerticalArrangement7 Label reglabel 
+(set-and-coerce-property! 'reglabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'reglabel 'FontSize 25 'number)
+
+(set-and-coerce-property! 'reglabel 'Text "REGI\u00c3O" 'text)
+
+(set-and-coerce-property! 'reglabel 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'reglabel 'Width -2 'number)
+
+)
+
+;;; regionlist
+
+(add-component VerticalArrangement7 ListPicker regionlist 
+(set-and-coerce-property! 'regionlist 'ElementsFromString "Urbana, Suburbana, Rural, Praia, Montanha, Outra" 'text)
+
+(set-and-coerce-property! 'regionlist 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'regionlist 'FontSize 15 'number)
+
+(set-and-coerce-property! 'regionlist 'Text "SELECIONE A REGI\u00c3O DO IM\u00d3VEL" 'text)
+
+(set-and-coerce-property! 'regionlist 'Title "Regi\u00e3o onde se localiza o im\u00f3vel" 'text)
+
+(set-and-coerce-property! 'regionlist 'Width -2 'number)
+
+)
+
+(define-event regionlist AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'regionlist 'Enabled #f 'boolean)(set-and-coerce-property! 'regionlist 'Text (get-property 'regionlist 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'regionlist 'SelectionIndex) 6) '(any any) "=") (begin   (set-and-coerce-property! 'Outraregiao 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'Outraregiao 'Visible #f 'boolean)(set-and-coerce-property! 'Outraregiao 'Text "" 'text))))
+;;; Outraregiao
+
+(add-component VerticalArrangement7 TextBox Outraregiao 
+(set-and-coerce-property! 'Outraregiao 'Hint "Qual outra?" 'text)
+
+(set-and-coerce-property! 'Outraregiao 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'Outraregiao 'Width -2 'number)
+
+)
+
+;;; limpareg
+
+(add-component VerticalArrangement7 Button limpareg 
+(set-and-coerce-property! 'limpareg 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limpareg 'Shape 1 'number)
+
+(set-and-coerce-property! 'limpareg 'Text "Alterar sele\u00e7\u00e3o da regi\u00e3o do im\u00f3vel" 'text)
+
+)
+
+(define-event limpareg Click()(set-this-form)
+    (set-and-coerce-property! 'regionlist 'Enabled #t 'boolean)(set-and-coerce-property! 'regionlist 'Text "SELECIONE A REGI\u00c3O DO IM\u00d3VEL" 'text)(set-and-coerce-property! 'Outraregiao 'Visible #f 'boolean)(set-and-coerce-property! 'Outraregiao 'Text "" 'text))
+;;; Esquina
+
+(add-component DADOS ListPicker Esquina 
+(set-and-coerce-property! 'Esquina 'ElementsFromString "Sim, N\u00e3o" 'text)
+
+(set-and-coerce-property! 'Esquina 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Esquina 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Esquina 'Text "IM\u00d3VEL DE ESQUINA?" 'text)
+
+(set-and-coerce-property! 'Esquina 'Width -2 'number)
+
+)
+
+(define-event Esquina AfterPicking()(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'Esquina 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'Lograsec 'Visible #t 'boolean)(call-component-method 'notificador 'ShowAlert (*list-for-runtime* "Rua secund\u00e1ria habilitada") '(text))) (begin   (set-and-coerce-property! 'Lograsec 'Visible #f 'boolean))))
+;;; VerticalArrangement8
+
+(add-component DADOS VerticalArrangement VerticalArrangement8 
+(set-and-coerce-property! 'VerticalArrangement8 'Width -2 'number)
+
+)
+
+;;; Label48
+
+(add-component VerticalArrangement8 Label Label48 
+(set-and-coerce-property! 'Label48 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label48 'FontSize 25 'number)
+
+(set-and-coerce-property! 'Label48 'Text "LOGRADOURO" 'text)
+
+(set-and-coerce-property! 'Label48 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label48 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement9
+
+(add-component VerticalArrangement8 VerticalArrangement VerticalArrangement9 
+(set-and-coerce-property! 'VerticalArrangement9 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement44
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement44 
+(set-and-coerce-property! 'HorizontalArrangement44 'Width -2 'number)
+
+)
+
+;;; ruaprinclabel
+
+(add-component HorizontalArrangement44 Label ruaprinclabel 
+(set-and-coerce-property! 'ruaprinclabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'ruaprinclabel 'FontSize 14 'number)
+
+(set-and-coerce-property! 'ruaprinclabel 'Text "Rua Principal   " 'text)
+
+)
+
+;;; ruaprinc
+
+(add-component HorizontalArrangement44 TextBox ruaprinc 
+(set-and-coerce-property! 'ruaprinc 'Hint "Nome da rua" 'text)
+
+(set-and-coerce-property! 'ruaprinc 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement37
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement37 
+(set-and-coerce-property! 'HorizontalArrangement37 'Width -2 'number)
+
+)
+
+;;; larglabel1
+
+(add-component HorizontalArrangement37 Label larglabel1 
+(set-and-coerce-property! 'larglabel1 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'larglabel1 'Text "Largura   " 'text)
+
+)
+
+;;; largura
+
+(add-component HorizontalArrangement37 TextBox largura 
+(set-and-coerce-property! 'largura 'Hint "Frente (em metros)" 'text)
+
+(set-and-coerce-property! 'largura 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'largura 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement38
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement38 
+(set-and-coerce-property! 'HorizontalArrangement38 'Width -2 'number)
+
+)
+
+;;; pavlabel1
+
+(add-component HorizontalArrangement38 Label pavlabel1 
+(set-and-coerce-property! 'pavlabel1 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'pavlabel1 'Text "Pavimenta\u00e7\u00e3o   " 'text)
+
+(set-and-coerce-property! 'pavlabel1 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement12
+
+(add-component HorizontalArrangement38 VerticalArrangement VerticalArrangement12 
+(set-and-coerce-property! 'VerticalArrangement12 'Width -2 'number)
+
+)
+
+;;; Tipopav1
+
+(add-component VerticalArrangement12 ListPicker Tipopav1 
+(set-and-coerce-property! 'Tipopav1 'ElementsFromString "Asfalto, Paralelep\u00edpedo, Estrada de Ch\u00e3o, Outro" 'text)
+
+(set-and-coerce-property! 'Tipopav1 'Text "TIPO" 'text)
+
+(set-and-coerce-property! 'Tipopav1 'Width -2 'number)
+
+)
+
+(define-event Tipopav1 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'Tipopav1 'Enabled #f 'boolean)(set-and-coerce-property! 'Tipopav1 'Text (get-property 'Tipopav1 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'Tipopav1 'SelectionIndex) 4) '(any any) "=") (begin   (set-and-coerce-property! 'Outropav1 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'Outropav1 'Visible #f 'boolean))))
+;;; Outropav1
+
+(add-component VerticalArrangement12 TextBox Outropav1 
+(set-and-coerce-property! 'Outropav1 'Hint "Qual outro?" 'text)
+
+(set-and-coerce-property! 'Outropav1 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'Outropav1 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement42
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement42 
+(set-and-coerce-property! 'HorizontalArrangement42 'Width -2 'number)
+
+)
+
+;;; ilumfrentelabel1
+
+(add-component HorizontalArrangement42 Label ilumfrentelabel1 
+(set-and-coerce-property! 'ilumfrentelabel1 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'ilumfrentelabel1 'Text "Ilumina\u00e7\u00e3o Frente   " 'text)
+
+(set-and-coerce-property! 'ilumfrentelabel1 'Width -2 'number)
+
+)
+
+;;; ilumfrente1
+
+(add-component HorizontalArrangement42 ListPicker ilumfrente1 
+(set-and-coerce-property! 'ilumfrente1 'ElementsFromString "Possui, N\u00e3o Possui" 'text)
+
+(set-and-coerce-property! 'ilumfrente1 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'ilumfrente1 'Width -2 'number)
+
+)
+
+(define-event ilumfrente1 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'ilumfrente1 'Enabled #f 'boolean)(set-and-coerce-property! 'ilumfrente1 'Text (get-property 'ilumfrente1 'Selection) 'text))
+;;; HorizontalArrangement43
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement43 
+(set-and-coerce-property! 'HorizontalArrangement43 'Width -2 'number)
+
+)
+
+;;; passcalabel1
+
+(add-component HorizontalArrangement43 Label passcalabel1 
+(set-and-coerce-property! 'passcalabel1 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'passcalabel1 'Text "Passeios (Cal\u00e7adas)   " 'text)
+
+(set-and-coerce-property! 'passcalabel1 'Width -2 'number)
+
+)
+
+;;; passeio1
+
+(add-component HorizontalArrangement43 ListPicker passeio1 
+(set-and-coerce-property! 'passeio1 'ElementsFromString "Possui, N\u00e3o Possui" 'text)
+
+(set-and-coerce-property! 'passeio1 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'passeio1 'Width -2 'number)
+
+)
+
+(define-event passeio1 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'passeio1 'Enabled #f 'boolean)(set-and-coerce-property! 'passeio1 'Text (get-property 'passeio1 'Selection) 'text))
+;;; HorizontalArrangement41
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement41 
+(set-and-coerce-property! 'HorizontalArrangement41 'Width -2 'number)
+
+)
+
+;;; arbolabel1
+
+(add-component HorizontalArrangement41 Label arbolabel1 
+(set-and-coerce-property! 'arbolabel1 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'arbolabel1 'Text "Arboriza\u00e7\u00e3o   " 'text)
+
+(set-and-coerce-property! 'arbolabel1 'Width -2 'number)
+
+)
+
+;;; arborizacao1
+
+(add-component HorizontalArrangement41 ListPicker arborizacao1 
+(set-and-coerce-property! 'arborizacao1 'ElementsFromString "Possui, N\u00e3o Possui" 'text)
+
+(set-and-coerce-property! 'arborizacao1 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'arborizacao1 'Width -2 'number)
+
+)
+
+(define-event arborizacao1 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'arborizacao1 'Enabled #f 'boolean)(set-and-coerce-property! 'arborizacao1 'Text (get-property 'arborizacao1 'Selection) 'text))
+;;; HorizontalArrangement40
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement40 
+(set-and-coerce-property! 'HorizontalArrangement40 'Width -2 'number)
+
+)
+
+;;; topolabel1
+
+(add-component HorizontalArrangement40 Label topolabel1 
+(set-and-coerce-property! 'topolabel1 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'topolabel1 'Text "Topologia   " 'text)
+
+(set-and-coerce-property! 'topolabel1 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement11
+
+(add-component HorizontalArrangement40 VerticalArrangement VerticalArrangement11 
+(set-and-coerce-property! 'VerticalArrangement11 'Width -2 'number)
+
+)
+
+;;; Topotipo1
+
+(add-component VerticalArrangement11 ListPicker Topotipo1 
+(set-and-coerce-property! 'Topotipo1 'ElementsFromString "Terreno plano, Terreno Inclinado" 'text)
+
+(set-and-coerce-property! 'Topotipo1 'Text "TIPO" 'text)
+
+(set-and-coerce-property! 'Topotipo1 'Width -2 'number)
+
+)
+
+(define-event Topotipo1 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'Topotipo1 'Enabled #f 'boolean)(set-and-coerce-property! 'Topotipo1 'Text (get-property 'Topotipo1 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'Topotipo1 'SelectionIndex) 2) '(any any) "=") (begin   (set-and-coerce-property! 'Paraonde1 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'Paraonde1 'Visible #f 'boolean)(set-and-coerce-property! 'Paraonde1 'Selection "" 'text))))
+;;; Paraonde1
+
+(add-component VerticalArrangement11 ListPicker Paraonde1 
+(set-and-coerce-property! 'Paraonde1 'ElementsFromString "Para os fundos, Para a frente" 'text)
+
+(set-and-coerce-property! 'Paraonde1 'Text "PARA ONDE DESCE?" 'text)
+
+(set-and-coerce-property! 'Paraonde1 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'Paraonde1 'Width -2 'number)
+
+)
+
+(define-event Paraonde1 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'Paraonde1 'Enabled #f 'boolean)(set-and-coerce-property! 'Paraonde1 'Text (get-property 'Paraonde1 'Selection) 'text))
+;;; HorizontalArrangement39
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement39 
+(set-and-coerce-property! 'HorizontalArrangement39 'Width -2 'number)
+
+)
+
+;;; outrosruaprilabel1
+
+(add-component HorizontalArrangement39 Label outrosruaprilabel1 
+(set-and-coerce-property! 'outrosruaprilabel1 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'outrosruaprilabel1 'Text "Outros   " 'text)
+
+)
+
+;;; outroruaprinc
+
+(add-component HorizontalArrangement39 TextBox outroruaprinc 
+(set-and-coerce-property! 'outroruaprinc 'Hint "Quais? (separar por v\u00edrgula mais que um)" 'text)
+
+(set-and-coerce-property! 'outroruaprinc 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement57
+
+(add-component VerticalArrangement9 HorizontalArrangement HorizontalArrangement57 
+(set-and-coerce-property! 'HorizontalArrangement57 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement57 'Width -2 'number)
+
+)
+
+;;; limpalograprinc
+
+(add-component HorizontalArrangement57 ListPicker limpalograprinc 
+(set-and-coerce-property! 'limpalograprinc 'ElementsFromString "Rua Principal, Largura, Tipo de Pavimenta\u00e7\u00e3o, Ilumina\u00e7\u00e3o da Frente, Passeios (Cal\u00e7adas), Arboriza\u00e7\u00e3o, Topologia, Outros, Todos" 'text)
+
+(set-and-coerce-property! 'limpalograprinc 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limpalograprinc 'Text "Limpar itens da rua principal" 'text)
+
+)
+
+(define-event limpalograprinc AfterPicking()(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'ruaprinc 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 2) '(any any) "=") (begin   (set-and-coerce-property! 'largura 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 3) '(any any) "=") (begin   (set-and-coerce-property! 'Tipopav1 'Enabled #t 'boolean)(set-and-coerce-property! 'Tipopav1 'Text "TIPO" 'text)(set-and-coerce-property! 'Outropav1 'Text "" 'text)(set-and-coerce-property! 'Outropav1 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 4) '(any any) "=") (begin   (set-and-coerce-property! 'ilumfrente1 'Enabled #t 'boolean)(set-and-coerce-property! 'ilumfrente1 'Text "OP\u00c7\u00d5ES" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 5) '(any any) "=") (begin   (set-and-coerce-property! 'passeio1 'Enabled #t 'boolean)(set-and-coerce-property! 'passeio1 'Text "OP\u00c7\u00d5ES" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 6) '(any any) "=") (begin   (set-and-coerce-property! 'arborizacao1 'Enabled #t 'boolean)(set-and-coerce-property! 'arborizacao1 'Text "OP\u00c7\u00d5ES" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 7) '(any any) "=") (begin   (set-and-coerce-property! 'Topotipo1 'Enabled #t 'boolean)(set-and-coerce-property! 'Topotipo1 'Text "TIPO" 'text)(set-and-coerce-property! 'Paraonde1 'Enabled #t 'boolean)(set-and-coerce-property! 'Paraonde1 'Text "PARA ONDE DESCE?" 'text)(set-and-coerce-property! 'Paraonde1 'SelectionIndex 0 'number)(set-and-coerce-property! 'Paraonde1 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 8) '(any any) "=") (begin   (set-and-coerce-property! 'outroruaprinc 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograprinc 'SelectionIndex) 9) '(any any) "=") (begin   (set-and-coerce-property! 'ruaprinc 'Text "" 'text)(set-and-coerce-property! 'largura 'Text "" 'text)(set-and-coerce-property! 'Tipopav1 'Enabled #t 'boolean)(set-and-coerce-property! 'Tipopav1 'Text "TIPO" 'text)(set-and-coerce-property! 'Outropav1 'Text "" 'text)(set-and-coerce-property! 'Outropav1 'Visible #f 'boolean)(set-and-coerce-property! 'ilumfrente1 'Enabled #t 'boolean)(set-and-coerce-property! 'ilumfrente1 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'passeio1 'Enabled #t 'boolean)(set-and-coerce-property! 'passeio1 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'arborizacao1 'Enabled #t 'boolean)(set-and-coerce-property! 'arborizacao1 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'Topotipo1 'Enabled #t 'boolean)(set-and-coerce-property! 'Topotipo1 'Text "TIPO" 'text)(set-and-coerce-property! 'Paraonde1 'Enabled #t 'boolean)(set-and-coerce-property! 'Paraonde1 'Text "PARA ONDE DESCE?" 'text)(set-and-coerce-property! 'Paraonde1 'SelectionIndex 0 'number)(set-and-coerce-property! 'Paraonde1 'Visible #f 'boolean)(set-and-coerce-property! 'outroruaprinc 'Text "" 'text))))))))))))))))))))
+;;; Lograsec
+
+(add-component VerticalArrangement8 VerticalArrangement Lograsec 
+(set-and-coerce-property! 'Lograsec 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'Lograsec 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement48
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement48 
+(set-and-coerce-property! 'HorizontalArrangement48 'Width -2 'number)
+
+)
+
+;;; ruaseclabel
+
+(add-component HorizontalArrangement48 Label ruaseclabel 
+(set-and-coerce-property! 'ruaseclabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'ruaseclabel 'Text "Rua Secund\u00e1ria   " 'text)
+
+)
+
+;;; ruasec
+
+(add-component HorizontalArrangement48 TextBox ruasec 
+(set-and-coerce-property! 'ruasec 'Hint "Nome da rua" 'text)
+
+(set-and-coerce-property! 'ruasec 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement49
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement49 
+(set-and-coerce-property! 'HorizontalArrangement49 'Width -2 'number)
+
+)
+
+;;; larglabel2
+
+(add-component HorizontalArrangement49 Label larglabel2 
+(set-and-coerce-property! 'larglabel2 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'larglabel2 'Text "Largura   " 'text)
+
+)
+
+;;; largura2
+
+(add-component HorizontalArrangement49 TextBox largura2 
+(set-and-coerce-property! 'largura2 'Hint "Frente (em metros)" 'text)
+
+(set-and-coerce-property! 'largura2 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'largura2 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement47
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement47 
+(set-and-coerce-property! 'HorizontalArrangement47 'Width -2 'number)
+
+)
+
+;;; pavlabel2
+
+(add-component HorizontalArrangement47 Label pavlabel2 
+(set-and-coerce-property! 'pavlabel2 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'pavlabel2 'Text "Pavimenta\u00e7\u00e3o   " 'text)
+
+(set-and-coerce-property! 'pavlabel2 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement14
+
+(add-component HorizontalArrangement47 VerticalArrangement VerticalArrangement14 
+(set-and-coerce-property! 'VerticalArrangement14 'Width -2 'number)
+
+)
+
+;;; Tipopav2
+
+(add-component VerticalArrangement14 ListPicker Tipopav2 
+(set-and-coerce-property! 'Tipopav2 'ElementsFromString "Asfalto, Paralelep\u00edpedo, Estrada de Ch\u00e3o, Outro" 'text)
+
+(set-and-coerce-property! 'Tipopav2 'Text "TIPO" 'text)
+
+(set-and-coerce-property! 'Tipopav2 'Width -2 'number)
+
+)
+
+(define-event Tipopav2 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'Tipopav2 'Enabled #f 'boolean)(set-and-coerce-property! 'Tipopav2 'Text (get-property 'Tipopav2 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'Tipopav2 'SelectionIndex) 4) '(any any) "=") (begin   (set-and-coerce-property! 'Outropav2 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'Outropav2 'Visible #f 'boolean))))
+;;; Outropav2
+
+(add-component VerticalArrangement14 TextBox Outropav2 
+(set-and-coerce-property! 'Outropav2 'Hint "Qual outro?" 'text)
+
+(set-and-coerce-property! 'Outropav2 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'Outropav2 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement51
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement51 
+(set-and-coerce-property! 'HorizontalArrangement51 'Width -2 'number)
+
+)
+
+;;; ilumfrentelabel2
+
+(add-component HorizontalArrangement51 Label ilumfrentelabel2 
+(set-and-coerce-property! 'ilumfrentelabel2 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'ilumfrentelabel2 'Text "Ilumina\u00e7\u00e3o Frente   " 'text)
+
+(set-and-coerce-property! 'ilumfrentelabel2 'Width -2 'number)
+
+)
+
+;;; ilumfrente2
+
+(add-component HorizontalArrangement51 ListPicker ilumfrente2 
+(set-and-coerce-property! 'ilumfrente2 'ElementsFromString "Possui, N\u00e3o Possui" 'text)
+
+(set-and-coerce-property! 'ilumfrente2 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'ilumfrente2 'Width -2 'number)
+
+)
+
+(define-event ilumfrente2 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'ilumfrente2 'Enabled #f 'boolean)(set-and-coerce-property! 'ilumfrente2 'Text (get-property 'ilumfrente2 'Selection) 'text))
+;;; HorizontalArrangement46
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement46 
+(set-and-coerce-property! 'HorizontalArrangement46 'Width -2 'number)
+
+)
+
+;;; passcal2
+
+(add-component HorizontalArrangement46 Label passcal2 
+(set-and-coerce-property! 'passcal2 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'passcal2 'Text "Passeios (Cal\u00e7adas)   " 'text)
+
+(set-and-coerce-property! 'passcal2 'Width -2 'number)
+
+)
+
+;;; passeio2
+
+(add-component HorizontalArrangement46 ListPicker passeio2 
+(set-and-coerce-property! 'passeio2 'ElementsFromString "Possui, N\u00e3o Possui" 'text)
+
+(set-and-coerce-property! 'passeio2 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'passeio2 'Width -2 'number)
+
+)
+
+(define-event passeio2 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'passeio2 'Enabled #f 'boolean)(set-and-coerce-property! 'passeio2 'Text (get-property 'passeio2 'Selection) 'text))
+;;; HorizontalArrangement50
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement50 
+(set-and-coerce-property! 'HorizontalArrangement50 'Width -2 'number)
+
+)
+
+;;; arbolabel2
+
+(add-component HorizontalArrangement50 Label arbolabel2 
+(set-and-coerce-property! 'arbolabel2 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'arbolabel2 'Text "Arboriza\u00e7\u00e3o   " 'text)
+
+(set-and-coerce-property! 'arbolabel2 'Width -2 'number)
+
+)
+
+;;; arborizacao2
+
+(add-component HorizontalArrangement50 ListPicker arborizacao2 
+(set-and-coerce-property! 'arborizacao2 'ElementsFromString "Possui, N\u00e3o Possui" 'text)
+
+(set-and-coerce-property! 'arborizacao2 'Text "OP\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'arborizacao2 'Width -2 'number)
+
+)
+
+(define-event arborizacao2 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'arborizacao2 'Enabled #f 'boolean)(set-and-coerce-property! 'arborizacao2 'Text (get-property 'arborizacao2 'Selection) 'text))
+;;; HorizontalArrangement52
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement52 
+(set-and-coerce-property! 'HorizontalArrangement52 'Width -2 'number)
+
+)
+
+;;; topolabel2
+
+(add-component HorizontalArrangement52 Label topolabel2 
+(set-and-coerce-property! 'topolabel2 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'topolabel2 'Text "Topologia   " 'text)
+
+(set-and-coerce-property! 'topolabel2 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement15
+
+(add-component HorizontalArrangement52 VerticalArrangement VerticalArrangement15 
+(set-and-coerce-property! 'VerticalArrangement15 'Width -2 'number)
+
+)
+
+;;; Topotipo2
+
+(add-component VerticalArrangement15 ListPicker Topotipo2 
+(set-and-coerce-property! 'Topotipo2 'ElementsFromString "Terreno plano, Terreno Inclinado" 'text)
+
+(set-and-coerce-property! 'Topotipo2 'Text "TIPO" 'text)
+
+(set-and-coerce-property! 'Topotipo2 'Width -2 'number)
+
+)
+
+(define-event Topotipo2 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'Topotipo2 'Enabled #f 'boolean)(set-and-coerce-property! 'Topotipo2 'Text (get-property 'Topotipo2 'Selection) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'Topotipo2 'SelectionIndex) 2) '(any any) "=") (begin   (set-and-coerce-property! 'Paraonde2 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'Paraonde2 'Visible #f 'boolean)(set-and-coerce-property! 'Paraonde2 'Text "" 'text))))
+;;; Paraonde2
+
+(add-component VerticalArrangement15 ListPicker Paraonde2 
+(set-and-coerce-property! 'Paraonde2 'ElementsFromString "Para os fundos, Para a frente" 'text)
+
+(set-and-coerce-property! 'Paraonde2 'Text "PARA ONDE DESCE?" 'text)
+
+(set-and-coerce-property! 'Paraonde2 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'Paraonde2 'Width -2 'number)
+
+)
+
+(define-event Paraonde2 AfterPicking()(set-this-form)
+    (set-and-coerce-property! 'Paraonde2 'Enabled #f 'boolean)(set-and-coerce-property! 'Paraonde2 'Text (get-property 'Paraonde2 'Selection) 'text))
+;;; HorizontalArrangement45
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement45 
+(set-and-coerce-property! 'HorizontalArrangement45 'Width -2 'number)
+
+)
+
+;;; outrosruaseclabel2
+
+(add-component HorizontalArrangement45 Label outrosruaseclabel2 
+(set-and-coerce-property! 'outrosruaseclabel2 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'outrosruaseclabel2 'Text "Outros   " 'text)
+
+)
+
+;;; outroruasec
+
+(add-component HorizontalArrangement45 TextBox outroruasec 
+(set-and-coerce-property! 'outroruasec 'Hint "Quais? (separar por v\u00edrgula mais que um)" 'text)
+
+(set-and-coerce-property! 'outroruasec 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement58
+
+(add-component Lograsec HorizontalArrangement HorizontalArrangement58 
+(set-and-coerce-property! 'HorizontalArrangement58 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement58 'Width -2 'number)
+
+)
+
+;;; limpalograsec
+
+(add-component HorizontalArrangement58 ListPicker limpalograsec 
+(set-and-coerce-property! 'limpalograsec 'ElementsFromString "Rua Principal, Largura, Tipo de Pavimenta\u00e7\u00e3o, Ilumina\u00e7\u00e3o da Frente, Passeios (Cal\u00e7adas), Arboriza\u00e7\u00e3o, Topologia, Outros, Todos" 'text)
+
+(set-and-coerce-property! 'limpalograsec 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limpalograsec 'Text "Limpar itens da rua secund\u00e1ria" 'text)
+
+)
+
+(define-event limpalograsec AfterPicking()(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 1) '(any any) "=") (begin   (set-and-coerce-property! 'ruasec 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 2) '(any any) "=") (begin   (set-and-coerce-property! 'largura2 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 3) '(any any) "=") (begin   (set-and-coerce-property! 'Tipopav2 'Enabled #t 'boolean)(set-and-coerce-property! 'Tipopav2 'Text "TIPO" 'text)(set-and-coerce-property! 'Outropav2 'Text "" 'text)(set-and-coerce-property! 'Outropav2 'Visible #f 'boolean)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 4) '(any any) "=") (begin   (set-and-coerce-property! 'ilumfrente2 'Enabled #t 'boolean)(set-and-coerce-property! 'ilumfrente2 'Text "OP\u00c7\u00d5ES" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 5) '(any any) "=") (begin   (set-and-coerce-property! 'passeio2 'Enabled #t 'boolean)(set-and-coerce-property! 'passeio2 'Text "OP\u00c7\u00d5ES" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 6) '(any any) "=") (begin   (set-and-coerce-property! 'arborizacao2 'Enabled #t 'boolean)(set-and-coerce-property! 'arborizacao2 'Text "OP\u00c7\u00d5ES" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 7) '(any any) "=") (begin   (set-and-coerce-property! 'Topotipo2 'Enabled #t 'boolean)(set-and-coerce-property! 'Topotipo2 'Text "TIPO" 'text)(set-and-coerce-property! 'Paraonde2 'Enabled #t 'boolean)(set-and-coerce-property! 'Paraonde2 'Text "PARA ONDE DESCE?" 'text)(set-and-coerce-property! 'Paraonde2 'Visible #f 'boolean)(set-and-coerce-property! 'Paraonde2 'SelectionIndex 0 'number)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 8) '(any any) "=") (begin   (set-and-coerce-property! 'outroruasec 'Text "" 'text)) (begin (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'limpalograsec 'SelectionIndex) 9) '(any any) "=") (begin   (set-and-coerce-property! 'ruasec 'Text "" 'text)(set-and-coerce-property! 'largura2 'Text "" 'text)(set-and-coerce-property! 'Tipopav2 'Enabled #t 'boolean)(set-and-coerce-property! 'Tipopav2 'Text "TIPO" 'text)(set-and-coerce-property! 'Outropav2 'Text "" 'text)(set-and-coerce-property! 'Outropav2 'Visible #f 'boolean)(set-and-coerce-property! 'ilumfrente2 'Enabled #t 'boolean)(set-and-coerce-property! 'ilumfrente2 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'passeio2 'Enabled #t 'boolean)(set-and-coerce-property! 'passeio2 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'arborizacao2 'Enabled #t 'boolean)(set-and-coerce-property! 'arborizacao2 'Text "OP\u00c7\u00d5ES" 'text)(set-and-coerce-property! 'Topotipo2 'Enabled #t 'boolean)(set-and-coerce-property! 'Topotipo2 'Text "TIPO" 'text)(set-and-coerce-property! 'Paraonde2 'Enabled #t 'boolean)(set-and-coerce-property! 'Paraonde2 'Text "PARA ONDE DESCE?" 'text)(set-and-coerce-property! 'Paraonde2 'Visible #f 'boolean)(set-and-coerce-property! 'Paraonde2 'SelectionIndex 0 'number)(set-and-coerce-property! 'outroruasec 'Text "" 'text))))))))))))))))))))
+;;; VerticalArrangement32
+
+(add-component DADOS VerticalArrangement VerticalArrangement32 
+(set-and-coerce-property! 'VerticalArrangement32 'Width -2 'number)
+
+)
+
+;;; usovizilabel
+
+(add-component VerticalArrangement32 Label usovizilabel 
+(set-and-coerce-property! 'usovizilabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'usovizilabel 'FontSize 15 'number)
+
+(set-and-coerce-property! 'usovizilabel 'Text "Uso e atividades das vizinhan\u00e7as imediatas" 'text)
+
+(set-and-coerce-property! 'usovizilabel 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'usovizilabel 'Width -2 'number)
+
+)
+
+;;; Usoeatividadeimediata
+
+(add-component VerticalArrangement32 TextBox Usoeatividadeimediata 
+(set-and-coerce-property! 'Usoeatividadeimediata 'Hint "Residencial? Comercial? Industrial?" 'text)
+
+(set-and-coerce-property! 'Usoeatividadeimediata 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement33
+
+(add-component DADOS VerticalArrangement VerticalArrangement33 
+(set-and-coerce-property! 'VerticalArrangement33 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'VerticalArrangement33 'Width -2 'number)
+
+)
+
+;;; Label64
+
+(add-component VerticalArrangement33 Label Label64 
+(set-and-coerce-property! 'Label64 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label64 'FontSize 25 'number)
+
+(set-and-coerce-property! 'Label64 'Text "INFORMA\u00c7\u00d5ES DO IM\u00d3VEL" 'text)
+
+(set-and-coerce-property! 'Label64 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label64 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement66
+
+(add-component VerticalArrangement33 HorizontalArrangement HorizontalArrangement66 
+(set-and-coerce-property! 'HorizontalArrangement66 'Width -2 'number)
+
+)
+
+;;; tipologialabel
+
+(add-component HorizontalArrangement66 Label tipologialabel 
+(set-and-coerce-property! 'tipologialabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'tipologialabel 'Text "Tipologia   " 'text)
+
+)
+
+;;; tipologiatexto
+
+(add-component HorizontalArrangement66 TextBox tipologiatexto 
+(set-and-coerce-property! 'tipologiatexto 'Hint "Casa? Apartamento? Terreno?" 'text)
+
+(set-and-coerce-property! 'tipologiatexto 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement63
+
+(add-component VerticalArrangement33 HorizontalArrangement HorizontalArrangement63 
+(set-and-coerce-property! 'HorizontalArrangement63 'Width -2 'number)
+
+)
+
+;;; arealabel
+
+(add-component HorizontalArrangement63 Label arealabel 
+(set-and-coerce-property! 'arealabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'arealabel 'Text "\u00c1rea   " 'text)
+
+)
+
+;;; area
+
+(add-component HorizontalArrangement63 TextBox area 
+(set-and-coerce-property! 'area 'Hint "\u00c1rea em m\u00b2" 'text)
+
+(set-and-coerce-property! 'area 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'area 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement64
+
+(add-component VerticalArrangement33 HorizontalArrangement HorizontalArrangement64 
+(set-and-coerce-property! 'HorizontalArrangement64 'Width -2 'number)
+
+)
+
+;;; arealotelabel
+
+(add-component HorizontalArrangement64 Label arealotelabel 
+(set-and-coerce-property! 'arealotelabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'arealotelabel 'Text "\u00c1rea do lote   " 'text)
+
+)
+
+;;; arealotetexto
+
+(add-component HorizontalArrangement64 TextBox arealotetexto 
+(set-and-coerce-property! 'arealotetexto 'Hint "\u00c1rea em m\u00b2" 'text)
+
+(set-and-coerce-property! 'arealotetexto 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'arealotetexto 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement62
+
+(add-component VerticalArrangement33 HorizontalArrangement HorizontalArrangement62 
+(set-and-coerce-property! 'HorizontalArrangement62 'Width -2 'number)
+
+)
+
+;;; perimetrolabel
+
+(add-component HorizontalArrangement62 Label perimetrolabel 
+(set-and-coerce-property! 'perimetrolabel 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'perimetrolabel 'Text "Per\u00edmetro   " 'text)
+
+)
+
+;;; perimetro
+
+(add-component HorizontalArrangement62 TextBox perimetro 
+(set-and-coerce-property! 'perimetro 'Hint "Per\u00edmetro em metros" 'text)
+
+(set-and-coerce-property! 'perimetro 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'perimetro 'Width -2 'number)
+
+)
+
+;;; Limpainfoimo
+
+(add-component VerticalArrangement33 Button Limpainfoimo 
+(set-and-coerce-property! 'Limpainfoimo 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Limpainfoimo 'Shape 1 'number)
+
+(set-and-coerce-property! 'Limpainfoimo 'Text "Limpar informa\u00e7\u00f5es do im\u00f3vel" 'text)
+
+)
+
+(define-event Limpainfoimo Click()(set-this-form)
+    (set-and-coerce-property! 'tipologiatexto 'Text "" 'text)(set-and-coerce-property! 'area 'Text "" 'text)(set-and-coerce-property! 'arealotetexto 'Text "" 'text)(set-and-coerce-property! 'perimetro 'Text "" 'text))
+;;; VerticalArrangement34
+
+(add-component DADOS VerticalArrangement VerticalArrangement34 
+(set-and-coerce-property! 'VerticalArrangement34 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'VerticalArrangement34 'Width -2 'number)
+
+)
+
+;;; Label65
+
+(add-component VerticalArrangement34 Label Label65 
+(set-and-coerce-property! 'Label65 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Label65 'FontSize 25 'number)
+
+(set-and-coerce-property! 'Label65 'Text "TRANSA\u00c7\u00c3O" 'text)
+
+(set-and-coerce-property! 'Label65 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'Label65 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement65
+
+(add-component VerticalArrangement34 HorizontalArrangement HorizontalArrangement65 
+(set-and-coerce-property! 'HorizontalArrangement65 'AlignHorizontal 3 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement65 'Width -2 'number)
+
+)
+
+;;; CheckVenda
+
+(add-component HorizontalArrangement65 CheckBox CheckVenda 
+(set-and-coerce-property! 'CheckVenda 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'CheckVenda 'Text "Venda" 'text)
+
+)
+
+(define-event CheckVenda Changed()(set-this-form)
+    (if (get-property 'CheckVenda 'Checked) (begin   (set-and-coerce-property! 'datavalor 'Visible #t 'boolean)(set-and-coerce-property! 'datavalor 'Text "Data de venda" 'text)(set-and-coerce-property! 'CheckOferta 'Enabled #f 'boolean)(set-and-coerce-property! 'HorizontalArrangement67 'Visible #t 'boolean)(set-and-coerce-property! 'valorvendaofertalabel 'Text "Valor de Venda" 'text)) (begin   (set-and-coerce-property! 'datavalor 'Visible #f 'boolean)(set-and-coerce-property! 'datavalor 'Text "" 'text)(set-and-coerce-property! 'CheckOferta 'Enabled #t 'boolean)(set-and-coerce-property! 'HorizontalArrangement67 'Visible #f 'boolean)(set-and-coerce-property! 'datavalor 'Enabled #t 'boolean)(set-and-coerce-property! 'valorvendaofertatexto 'Text "" 'text))))
+;;; CheckOferta
+
+(add-component HorizontalArrangement65 CheckBox CheckOferta 
+(set-and-coerce-property! 'CheckOferta 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'CheckOferta 'Text "Oferta" 'text)
+
+)
+
+(define-event CheckOferta Changed()(set-this-form)
+    (if (get-property 'CheckOferta 'Checked) (begin   (set-and-coerce-property! 'datavalor 'Visible #t 'boolean)(set-and-coerce-property! 'datavalor 'Text "Data da oferta" 'text)(set-and-coerce-property! 'CheckVenda 'Enabled #f 'boolean)(set-and-coerce-property! 'HorizontalArrangement67 'Visible #t 'boolean)(set-and-coerce-property! 'valorvendaofertalabel 'Text "Valor da Oferta" 'text)) (begin   (set-and-coerce-property! 'datavalor 'Visible #f 'boolean)(set-and-coerce-property! 'datavalor 'Text "" 'text)(set-and-coerce-property! 'CheckVenda 'Enabled #t 'boolean)(set-and-coerce-property! 'HorizontalArrangement67 'Visible #f 'boolean)(set-and-coerce-property! 'datavalor 'Enabled #t 'boolean)(set-and-coerce-property! 'valorvendaofertatexto 'Text "" 'text))))
+;;; datavalor
+
+(add-component HorizontalArrangement65 DatePicker datavalor 
+(set-and-coerce-property! 'datavalor 'Visible #f 'boolean)
+
+)
+
+(define-event datavalor AfterDateSet()(set-this-form)
+    (set-and-coerce-property! 'datavalor 'Enabled #f 'boolean)(set-and-coerce-property! 'datavalor 'Text (call-yail-primitive string-append (*list-for-runtime* (get-property 'datavalor 'Day) "/" (get-property 'datavalor 'Month) "/" (get-property 'datavalor 'Year) ) '(text text text text text ) "join") 'text))
+;;; HorizontalArrangement67
+
+(add-component VerticalArrangement34 HorizontalArrangement HorizontalArrangement67 
+(set-and-coerce-property! 'HorizontalArrangement67 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'HorizontalArrangement67 'Width -2 'number)
+
+)
+
+;;; valorvendaofertalabel
+
+(add-component HorizontalArrangement67 Label valorvendaofertalabel 
+)
+
+;;; valorvendaofertatexto
+
+(add-component HorizontalArrangement67 TextBox valorvendaofertatexto 
+(set-and-coerce-property! 'valorvendaofertatexto 'Hint "Valor em R$" 'text)
+
+(set-and-coerce-property! 'valorvendaofertatexto 'NumbersOnly #t 'boolean)
+
+(set-and-coerce-property! 'valorvendaofertatexto 'Width -2 'number)
+
+)
+
+;;; limpavalor
+
+(add-component VerticalArrangement34 Button limpavalor 
+(set-and-coerce-property! 'limpavalor 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'limpavalor 'Shape 1 'number)
+
+(set-and-coerce-property! 'limpavalor 'Text "Limpar dados de transa\u00e7\u00e3o" 'text)
+
+)
+
+(define-event limpavalor Click()(set-this-form)
+    (set-and-coerce-property! 'CheckOferta 'Enabled #t 'boolean)(set-and-coerce-property! 'CheckOferta 'Checked #f 'boolean)(set-and-coerce-property! 'CheckVenda 'Enabled #t 'boolean)(set-and-coerce-property! 'CheckVenda 'Checked #f 'boolean)(set-and-coerce-property! 'datavalor 'Text "" 'text)(set-and-coerce-property! 'datavalor 'Enabled #t 'boolean)(set-and-coerce-property! 'valorvendaofertalabel 'Text "" 'text)(set-and-coerce-property! 'valorvendaofertatexto 'Text "" 'text))
+;;; HorizontalArrangement53
+
+(add-component DADOS HorizontalArrangement HorizontalArrangement53 
+(set-and-coerce-property! 'HorizontalArrangement53 'AlignHorizontal 3 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement53 'Width -2 'number)
+
+)
+
+;;; Salvardados
+
+(add-component HorizontalArrangement53 Button Salvardados 
+(set-and-coerce-property! 'Salvardados 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Salvardados 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Salvardados 'Shape 1 'number)
+
+(set-and-coerce-property! 'Salvardados 'Text "SALVAR" 'text)
+
+)
+
+(define-event Salvardados Click()(set-this-form)
+    (if (call-yail-primitive string-empty? (*list-for-runtime* (call-component-method 'Imolista 'GetValue (*list-for-runtime* "numero_imovel"  "") '(text any))) '(text) "is text empty?") (begin   (set-var! g$realtyn (call-yail-primitive + (*list-for-runtime* (get-var g$realtyn) 1 ) '(number number ) "+"))) (begin   (set-var! g$realtyn (call-component-method 'Imolista 'GetValue (*list-for-runtime* "numero_imovel"  "") '(text any)))(set-var! g$realtyn (call-yail-primitive + (*list-for-runtime* (get-var g$realtyn) 1 ) '(number number ) "+"))))(call-yail-primitive yail-list-add-to-list! (*list-for-runtime* (get-var g$header) "N\u00ba do cadastro" "Data de preenchimento" "Fotos" (get-property 'precatuallabel 'Text) (get-property 'latlabel 'Text) (get-property 'longlabel 'Text) (get-property 'altlabel 'Text) (get-property 'bairrolabel 'Text) (get-property 'distralabel 'Text) (get-property 'munlabel 'Text) (get-property 'uflabel 'Text) (get-property 'proplabel 'Text) (get-property 'redeagualabel 'Text) (get-property 'esgsanlabel 'Text) (get-property 'esgpluvlabel 'Text) (get-property 'eneletlabel 'Text) (get-property 'ilupublabel 'Text) (get-property 'litelabel 'Text) (get-property 'gascanlabel 'Text) (get-property 'outroservpublabel 'Text) (get-property 'escprimlabel 'Text) (get-property 'escseclabel 'Text) (get-property 'postmedlabel 'Text) (get-property 'polabel 'Text) (get-property 'temprelabel 'Text) (get-property 'reclazbel 'Text) (get-property 'outroservcomlabel 'Text) (get-property 'comlabel 'Text) (get-property 'superlabel 'Text) (get-property 'barerestlabel 'Text) (get-property 'farmlabel 'Text) (get-property 'outroservgeralabel 'Text) (get-property 'distlabel 'Text) "Regi\u00e3o" (get-property 'ruaprinclabel 'Text) (get-property 'larglabel1 'Text) (get-property 'pavlabel1 'Text) (get-property 'ilumfrentelabel1 'Text) (get-property 'passcalabel1 'Text) (get-property 'arbolabel1 'Text) (get-property 'topolabel1 'Text) (get-property 'outrosruaprilabel1 'Text) (get-property 'ruaseclabel 'Text) (get-property 'larglabel2 'Text) (get-property 'pavlabel2 'Text) (get-property 'ilumfrentelabel2 'Text) (get-property 'passcal2 'Text) (get-property 'arbolabel2 'Text) (get-property 'topolabel2 'Text) (get-property 'outrosruaseclabel2 'Text) (get-property 'usovizilabel 'Text) (get-property 'tipologialabel 'Text) (get-property 'arealabel 'Text) (get-property 'arealotelabel 'Text) (get-property 'perimetrolabel 'Text) "Tipo de transa\u00e7\u00e3o" "Data da transa\u00e7\u00e3o" "Valor da transa\u00e7\u00e3o" ) '(list any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any ) "add items to list")(call-yail-primitive yail-list-add-to-list! (*list-for-runtime* (get-var g$data) (get-var g$realtyn) (call-component-method 'dateandtime 'FormatDateTime (*list-for-runtime* (call-component-method 'dateandtime 'Now (*list-for-runtime*) '())) '(InstantInTime)) (get-var g$fotolink) (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'precatualvalor 'Text) "Precis\u00e3o n\u00e3o dispon\u00edvel") '(any any) "=") "Dados indispon\u00edveis" (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'precatualvalor 'Text) "," ".") '(text text text) "replace all")) (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'latvalor 'Text) 0) '(any any) "=") "Dados indispon\u00edveis" (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'latvalor 'Text) "," ".") '(text text text) "replace all")) (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'longvalor 'Text) 0) '(any any) "=") "Dados indispon\u00edveis" (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'longvalor 'Text) "," ".") '(text text text) "replace all")) (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'altvalor 'Text) 0) '(any any) "=") "Dados indispon\u00edveis" (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'altvalor 'Text) "," ".") '(text text text) "replace all")) (get-property 'bairronome 'Text) (get-property 'distritoranome 'Text) (get-property 'municipionome 'Text) (get-property 'estadonome 'Text) (get-property 'proprietarionome 'Text) (get-property 'redeagua 'Selection) (get-property 'esgotosanit 'Selection) (get-property 'esgotopluv 'Selection) (get-property 'energelet 'Selection) (get-property 'ilumpubl 'Selection) (get-property 'linhatel 'Selection) (get-property 'gascanalizado 'Selection) (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'outropublico 'Text) "," "/") '(text text text) "replace all") (call-yail-primitive string-append (*list-for-runtime* (get-property 'escprim 'Selection) " " (get-property 'quantescprim 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'escsec 'Selection) " " (get-property 'quantescsec 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'postomed 'Selection) " " (get-property 'quantpostomed 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'policia 'Selection) " " (get-property 'quantpolicia 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'templorel 'Selection) " " (get-property 'quanttemplorel 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'reclazer 'Selection) " " (get-property 'quantreclazer 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'outroservcom 'Selection) " " (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'qualoutroservcom 'Text) "," "/") '(text text text) "replace all") ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'comercio 'Selection) " " (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'quantcomercio 'Text) "," "/") '(text text text) "replace all") ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'supermercados 'Selection) " " (get-property 'quantsupermercados 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'barerest 'Selection) " " (get-property 'quantbarerest 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'farm 'Selection) " " (get-property 'quantfarm 'Text) ) '(text text text ) "join") (call-yail-primitive string-append (*list-for-runtime* (get-property 'outroservgeral 'Selection) " " (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'qualservgeral 'Text) "," "/") '(text text text) "replace all") ) '(text text text ) "join") (get-property 'distanciaponto 'Text) (get-property 'regionlist 'Selection) (get-property 'ruaprinc 'Text) (get-property 'largura 'Text) (call-yail-primitive string-append (*list-for-runtime* (get-property 'Tipopav1 'Selection) " " (get-property 'Outropav1 'Text) ) '(text text text ) "join") (get-property 'ilumfrente1 'Selection) (get-property 'passeio1 'Selection) (get-property 'arborizacao1 'Selection) (call-yail-primitive string-append (*list-for-runtime* (get-property 'Topotipo1 'Selection) " " (get-property 'Paraonde1 'Selection) ) '(text text text ) "join") (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'outroruaprinc 'Text) "," "/") '(text text text) "replace all") (get-property 'ruasec 'Text) (get-property 'largura2 'Text) (call-yail-primitive string-append (*list-for-runtime* (get-property 'Tipopav2 'Selection) " " (get-property 'Outropav2 'Text) ) '(text text text ) "join") (get-property 'ilumfrente2 'Selection) (get-property 'passeio2 'Selection) (get-property 'arborizacao2 'Selection) (call-yail-primitive string-append (*list-for-runtime* (get-property 'Topotipo2 'Selection) " " (get-property 'Paraonde2 'Selection) ) '(text text text ) "join") (call-yail-primitive string-replace-all (*list-for-runtime* (get-property 'outroruasec 'Text) "," "/") '(text text text) "replace all") (get-property 'Usoeatividadeimediata 'Text) (get-property 'tipologiatexto 'Text) (get-property 'area 'Text) (get-property 'arealotetexto 'Text) (get-property 'perimetro 'Text) (if (and-delayed (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'CheckVenda 'Checked) #f) '(any any) "=") (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'CheckOferta 'Checked) #f) '(any any) "=")) "Dado indispon\u00edvel ou n\u00e3o selecionado" (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'CheckVenda 'Checked) #t) '(any any) "=") (get-property 'CheckVenda 'Text) (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'CheckOferta 'Checked) #t) '(any any) "=") (get-property 'CheckOferta 'Text) "Dado indispon\u00edvel ou n\u00e3o selecionado"))) (if (or-delayed (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'datavalor 'Text) "Data de venda") '(any any) "=") (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'datavalor 'Text) "Data da oferta") '(any any) "=")) "Data n\u00e3o definida" (get-property 'datavalor 'Text)) (get-property 'valorvendaofertatexto 'Text) ) '(list any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any any ) "add items to list")(set-var! g$tabela (call-component-method 'Imolista 'GetValue (*list-for-runtime* "tabela_resultado"  "") '(text any)))(set-var! g$fotolink (call-yail-primitive make-yail-list (*list-for-runtime* ) '() "make a list"))((get-var p$cria_tabela) ))
+;;; novocadastro
+
+(add-component HorizontalArrangement53 Button novocadastro 
+(set-and-coerce-property! 'novocadastro 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'novocadastro 'Shape 1 'number)
+
+(set-and-coerce-property! 'novocadastro 'Text "NOVO CADASTRO" 'text)
+
+)
+
+(define-event novocadastro Click()(set-this-form)
+    ((get-var p$goToScreen) "DADOS"))
+;;; HorizontalArrangement1
+
+(add-component DADOS HorizontalArrangement HorizontalArrangement1 
+(set-and-coerce-property! 'HorizontalArrangement1 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement1 'Width -2 'number)
+
+)
+
+;;; Voltar
+
+(add-component HorizontalArrangement1 Button Voltar 
+(set-and-coerce-property! 'Voltar 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Voltar 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Voltar 'Shape 1 'number)
+
+(set-and-coerce-property! 'Voltar 'Text "VOLTAR" 'text)
+
+)
+
+(define-event Voltar Click()(set-this-form)
+    ((get-var p$goToScreen) "Screen1"))
+;;; LocationSensor1
+
+(add-component DADOS LocationSensor LocationSensor1 
+)
+
+(define-event LocationSensor1 LocationChanged($latitude $longitude $altitude)(set-this-form)
+    (set-and-coerce-property! 'precatualvalor 'Text (get-property 'LocationSensor1 'Accuracy) 'text)(set-and-coerce-property! 'latvalor 'Text (lexical-value $latitude) 'text)(set-and-coerce-property! 'longvalor 'Text (lexical-value $longitude) 'text)(set-and-coerce-property! 'altvalor 'Text (lexical-value $altitude) 'text)((get-var p$desliga_pega_coord) ))
+;;; Camera1
+
+(add-component DADOS Camera Camera1 
+)
+
+(define-event Camera1 AfterPicture($image)(set-this-form)
+    (set-and-coerce-property! 'Foto 'Picture (lexical-value $image) 'text)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'Foto 'Picture) (lexical-value $image)) '(any any) "=") (begin   (set-and-coerce-property! 'HorizontalArrangement59 'Visible #t 'boolean)) (begin   (set-and-coerce-property! 'HorizontalArrangement59 'Visible #f 'boolean)))(call-yail-primitive yail-list-add-to-list! (*list-for-runtime* (get-var g$fotolink) " " (if (call-yail-primitive yail-equal? (*list-for-runtime* (lexical-value $image) "()") '(any any) "=") "N\u00e3o foram tiradas fotos do im\u00f3vel" (lexical-value $image)) ) '(list any any ) "add items to list"))
+;;; Imolista
+
+(add-component DADOS TinyDB Imolista 
+)
+
+;;; notificador
+
+(add-component DADOS Notifier notificador 
+)
+
+(define-event notificador AfterChoosing($choice)(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (lexical-value $choice) "Sim") '(any any) "=") (begin   ((get-var p$goToScreen) "Screen1")) (begin   (call-component-method 'notificador 'ShowAlert (*list-for-runtime* "Continuando cadastro...") '(text)))))
+;;; dateandtime
+
+(add-component DADOS Clock dateandtime 
+)
+
+(init-runtime)

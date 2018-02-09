@@ -1,0 +1,155 @@
+#|
+$Source $Yail
+|#
+
+(define-form appinventor.ai_dollarbr.CaImoRa.LISTA LISTA)
+(require <com.google.youngandroid.runtime>)
+
+(def (p$procedure $screen)  (if #t (begin   (call-yail-primitive open-another-screen (*list-for-runtime* (lexical-value $screen)) '(text) "open another screen")))(call-yail-primitive close-screen (*list-for-runtime* ) '() "close screen"))
+(def g$desenvolvimento #f)
+(def g$tabela_csv (call-yail-primitive make-yail-list (*list-for-runtime* ) '() "make a list"))
+(def g$filename "")
+;;; LISTA
+
+(do-after-form-creation (set-and-coerce-property! 'LISTA 'BackgroundColor #x00000000 'number)
+ (set-and-coerce-property! 'LISTA 'ScreenOrientation "user" 'text)
+ (set-and-coerce-property! 'LISTA 'Title "TABELA DE CADASTROS" 'text)
+)
+
+(define-event LISTA BackPressed()(set-this-form)
+    (if #t (begin   (call-yail-primitive open-another-screen (*list-for-runtime* "Screen1") '(text) "open another screen")))(call-yail-primitive close-screen (*list-for-runtime* ) '() "close screen"))
+(define-event LISTA Initialize()(set-this-form)
+    (set-and-coerce-property! 'LISTA 'AboutScreen "Esta tela apresenta a tabela de im\u00f3veis cadastrados.<!--" 'text)(set-var! g$tabela_csv (call-component-method 'Imolista 'GetValue (*list-for-runtime* "tabela_csv"  "Sem dados armazenados para cria\u00e7\u00e3o da tabela") '(text any))))
+;;; criatabela
+
+(add-component LISTA Button criatabela 
+(set-and-coerce-property! 'criatabela 'Text "Processar dados e criar tabela" 'text)
+
+(set-and-coerce-property! 'criatabela 'Width -2 'number)
+
+)
+
+(define-event criatabela Click()(set-this-form)
+    (set-and-coerce-property! 'tabelaeresultados 'Visible #t 'boolean)(if (call-yail-primitive yail-equal? (*list-for-runtime* (get-var g$tabela_csv) "Sem dados armazenados para cria\u00e7\u00e3o da tabela") '(any any) "=") (begin   (set-and-coerce-property! 'tocsvarrangement 'Visible #f 'boolean)) (begin   (set-and-coerce-property! 'tocsvarrangement 'Visible #t 'boolean)))(set-and-coerce-property! 'tabelaeresultados 'HomeUrl (if (get-var g$desenvolvimento) "file:///mnt/sdcard/AppInventor/assets/table.html" "file:///android_asset/table.html") 'text)(set-and-coerce-property! 'tabelaeresultados 'WebViewString (get-var g$tabela_csv) 'text)(call-component-method 'tabelaeresultados 'GoHome (*list-for-runtime*) '()))
+;;; tocsvarrangement
+
+(add-component LISTA VerticalArrangement tocsvarrangement 
+(set-and-coerce-property! 'tocsvarrangement 'Visible #f 'boolean)
+
+(set-and-coerce-property! 'tocsvarrangement 'Width -2 'number)
+
+)
+
+;;; HorizontalArrangement2
+
+(add-component tocsvarrangement HorizontalArrangement HorizontalArrangement2 
+(set-and-coerce-property! 'HorizontalArrangement2 'Width -2 'number)
+
+)
+
+;;; filename
+
+(add-component HorizontalArrangement2 TextBox filename 
+(set-and-coerce-property! 'filename 'Hint "Nome do arquivo" 'text)
+
+(set-and-coerce-property! 'filename 'Width -2 'number)
+
+)
+
+;;; datatocsv
+
+(add-component HorizontalArrangement2 Button datatocsv 
+(set-and-coerce-property! 'datatocsv 'Text "Exportar tabela" 'text)
+
+(set-and-coerce-property! 'datatocsv 'Width -2 'number)
+
+)
+
+(define-event datatocsv Click()(set-this-form)
+    (set-var! g$filename (if (call-yail-primitive yail-equal? (*list-for-runtime* (get-property 'filename 'Text) "") '(any any) "=") "/Cadastro.csv" (call-yail-primitive string-append (*list-for-runtime* "/" (get-property 'filename 'Text) ".csv" ) '(text text text ) "join")))(call-component-method 'savetosd 'SaveFile (*list-for-runtime* (get-var g$tabela_csv)  (get-var g$filename)) '(text text))(call-component-method 'Notificador 'ShowAlert (*list-for-runtime* "Tabela salva\n com sucesso no\n armazenamento externo") '(text)))
+;;; HorizontalArrangement3
+
+(add-component tocsvarrangement HorizontalArrangement HorizontalArrangement3 
+(set-and-coerce-property! 'HorizontalArrangement3 'Width -2 'number)
+
+)
+
+;;; VerticalArrangement2
+
+(add-component HorizontalArrangement3 VerticalArrangement VerticalArrangement2 
+(set-and-coerce-property! 'VerticalArrangement2 'Width -2 'number)
+
+)
+
+;;; Label2
+
+(add-component VerticalArrangement2 Label Label2 
+(set-and-coerce-property! 'Label2 'FontSize 10 'number)
+
+(set-and-coerce-property! 'Label2 'Text "(sem preenchimento, ser\u00e1 utilizado o padr\u00e3o \"Cadastro\")" 'text)
+
+(set-and-coerce-property! 'Label2 'TextColor #xFFFF0000 'number)
+
+)
+
+;;; VerticalArrangement3
+
+(add-component HorizontalArrangement3 VerticalArrangement VerticalArrangement3 
+(set-and-coerce-property! 'VerticalArrangement3 'Width -2 'number)
+
+)
+
+;;; Label3
+
+(add-component VerticalArrangement3 Label Label3 
+(set-and-coerce-property! 'Label3 'Width -2 'number)
+
+)
+
+;;; tabelaeresultados
+
+(add-component LISTA WebViewer tabelaeresultados 
+(set-and-coerce-property! 'tabelaeresultados 'Visible #f 'boolean)
+
+)
+
+;;; HorizontalArrangement1
+
+(add-component LISTA HorizontalArrangement HorizontalArrangement1 
+(set-and-coerce-property! 'HorizontalArrangement1 'AlignHorizontal 2 'number)
+
+(set-and-coerce-property! 'HorizontalArrangement1 'Width -2 'number)
+
+)
+
+;;; Voltar
+
+(add-component HorizontalArrangement1 Button Voltar 
+(set-and-coerce-property! 'Voltar 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Voltar 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Voltar 'Shape 1 'number)
+
+(set-and-coerce-property! 'Voltar 'Text "VOLTAR" 'text)
+
+)
+
+(define-event Voltar Click()(set-this-form)
+    ((get-var p$procedure) "Screen1"))
+;;; Imolista
+
+(add-component LISTA TinyDB Imolista 
+)
+
+;;; Notificador
+
+(add-component LISTA Notifier Notificador 
+)
+
+;;; savetosd
+
+(add-component LISTA File savetosd 
+)
+
+(init-runtime)

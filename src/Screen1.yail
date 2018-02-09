@@ -1,0 +1,196 @@
+#|
+$Source $Yail
+|#
+
+(define-form appinventor.ai_dollarbr.CaImoRa.Screen1 Screen1)
+(require <com.google.youngandroid.runtime>)
+
+(def (p$goToScreen $screen)  (if #t (begin   (call-yail-primitive open-another-screen (*list-for-runtime* (lexical-value $screen)) '(text) "open another screen")))(call-yail-primitive close-screen (*list-for-runtime* ) '() "close screen"))
+;;; Screen1
+
+(do-after-form-creation (set-and-coerce-property! 'Screen1 'AlignHorizontal 3 'number)
+ (set-and-coerce-property! 'Screen1 'BackgroundColor #x00000000 'number)
+ (set-and-coerce-property! 'Screen1 'CloseScreenAnimation "fade" 'text)
+ (set-and-coerce-property! 'Screen1 'Icon "Research.png" 'text)
+ (set-and-coerce-property! 'Screen1 'ScreenOrientation "user" 'text)
+ (set-and-coerce-property! 'Screen1 'Scrollable #f 'boolean)
+ (set-and-coerce-property! 'Screen1 'Title "MENU" 'text)
+ (set-and-coerce-property! 'Screen1 'VersionName "1.1.0" 'text)
+)
+
+(define-event Screen1 BackPressed()(set-this-form)
+    (call-component-method 'Notificador 'ShowChooseDialog (*list-for-runtime* "Voc\u00ea deseja mesmo sair do aplicativo?"  "Sair"  "Sim"  "Cancelar"  #f) '(text text text text boolean)))
+(define-event Screen1 Initialize()(set-this-form)
+    (set-and-coerce-property! 'Screen1 'AboutScreen "Ca.Imo.Ra. \u00e9 um aplicativo criado como Trabalho de Monografia e apresentado ao Curso de Engenharia Civil da Universidade Comunit\u00e1ria da Regi\u00e3o de Chapec\u00f3, como parte dos requisitos para obten\u00e7\u00e3o de Bacharel em Engenharia Civil, foi criado por Felipe Dallagnol e seu nome \u00e9 um acr\u00f4nimo de Cadastro Imobili\u00e1rio R\u00e1pido.<!--" 'text))
+;;; TableArrangement1
+
+(add-component Screen1 TableArrangement TableArrangement1 
+(set-and-coerce-property! 'TableArrangement1 'Rows 4 'number)
+
+)
+
+;;; newdata
+
+(add-component TableArrangement1 Label newdata 
+(set-and-coerce-property! 'newdata 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'newdata 'Text "NOVOS DADOS" 'text)
+
+(set-and-coerce-property! 'newdata 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'newdata 'Column 0 'number)
+
+(set-and-coerce-property! 'newdata 'Row 0 'number)
+
+(set-and-coerce-property! 'newdata 'Width -2 'number)
+
+)
+
+;;; config
+
+(add-component TableArrangement1 Label config 
+(set-and-coerce-property! 'config 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'config 'Text "CONFIGURA\u00c7\u00d5ES" 'text)
+
+(set-and-coerce-property! 'config 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'config 'Column 1 'number)
+
+(set-and-coerce-property! 'config 'Row 0 'number)
+
+(set-and-coerce-property! 'config 'Width -2 'number)
+
+)
+
+;;; Dados
+
+(add-component TableArrangement1 Button Dados 
+(set-and-coerce-property! 'Dados 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Dados 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Dados 'Image "list.png" 'text)
+
+(set-and-coerce-property! 'Dados 'Column 0 'number)
+
+(set-and-coerce-property! 'Dados 'Row 1 'number)
+
+(set-and-coerce-property! 'Dados 'Width 150 'number)
+
+(set-and-coerce-property! 'Dados 'Height 150 'number)
+
+)
+
+(define-event Dados Click()(set-this-form)
+    ((get-var p$goToScreen) "DADOS"))
+;;; Opcoes
+
+(add-component TableArrangement1 Button Opcoes 
+(set-and-coerce-property! 'Opcoes 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Opcoes 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Opcoes 'Image "configurationsxd2.png" 'text)
+
+(set-and-coerce-property! 'Opcoes 'Column 1 'number)
+
+(set-and-coerce-property! 'Opcoes 'Row 1 'number)
+
+(set-and-coerce-property! 'Opcoes 'Width 150 'number)
+
+(set-and-coerce-property! 'Opcoes 'Height 150 'number)
+
+)
+
+(define-event Opcoes Click()(set-this-form)
+    ((get-var p$goToScreen) "OPCOES"))
+;;; database
+
+(add-component TableArrangement1 Label database 
+(set-and-coerce-property! 'database 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'database 'Text "BANCO DE DADOS" 'text)
+
+(set-and-coerce-property! 'database 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'database 'Column 0 'number)
+
+(set-and-coerce-property! 'database 'Row 2 'number)
+
+(set-and-coerce-property! 'database 'Width -2 'number)
+
+)
+
+;;; exit
+
+(add-component TableArrangement1 Label exit 
+(set-and-coerce-property! 'exit 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'exit 'Text "SAIR" 'text)
+
+(set-and-coerce-property! 'exit 'TextAlignment 1 'number)
+
+(set-and-coerce-property! 'exit 'Column 1 'number)
+
+(set-and-coerce-property! 'exit 'Row 2 'number)
+
+(set-and-coerce-property! 'exit 'Width -2 'number)
+
+)
+
+;;; Lista
+
+(add-component TableArrangement1 Button Lista 
+(set-and-coerce-property! 'Lista 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Lista 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Lista 'Image "Arquivo.png" 'text)
+
+(set-and-coerce-property! 'Lista 'Column 0 'number)
+
+(set-and-coerce-property! 'Lista 'Row 3 'number)
+
+(set-and-coerce-property! 'Lista 'Width 150 'number)
+
+(set-and-coerce-property! 'Lista 'Height 145 'number)
+
+)
+
+(define-event Lista Click()(set-this-form)
+    ((get-var p$goToScreen) "LISTA"))
+;;; Sair
+
+(add-component TableArrangement1 Button Sair 
+(set-and-coerce-property! 'Sair 'FontBold #t 'boolean)
+
+(set-and-coerce-property! 'Sair 'FontSize 15 'number)
+
+(set-and-coerce-property! 'Sair 'Image "FolderClose.png" 'text)
+
+(set-and-coerce-property! 'Sair 'Column 1 'number)
+
+(set-and-coerce-property! 'Sair 'Row 3 'number)
+
+(set-and-coerce-property! 'Sair 'Width 150 'number)
+
+(set-and-coerce-property! 'Sair 'Height 150 'number)
+
+)
+
+(define-event Sair Click()(set-this-form)
+    (call-yail-primitive close-application (*list-for-runtime* ) '() "close application"))
+;;; Notificador
+
+(add-component Screen1 Notifier Notificador 
+)
+
+(define-event Notificador AfterChoosing($choice)(set-this-form)
+    (if (call-yail-primitive yail-equal? (*list-for-runtime* (lexical-value $choice) "Sim") '(any any) "=") (begin   (call-yail-primitive close-application (*list-for-runtime* ) '() "close application"))))
+;;; Imolista
+
+(add-component Screen1 TinyDB Imolista 
+)
+
+(init-runtime)
